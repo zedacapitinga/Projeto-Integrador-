@@ -30,50 +30,42 @@ Calciumtrice.prototype.getFase = function () {
     return window.localStorage.getItem("fase");
 };
 
-Calciumtrice.prototype.iniciaFase = function () {
-    this.game.physics.startSystem(Phaser.Physics.ARCADE);
+//Calciumtrice.prototype.criaInimigos = function (listaInimigos) {
+//    var inimigosDoMapa, inimigo;
+//    this.inimigos = this.game.add.group();
+//    var i, j, maxI, maxJ;
+//    for (i = 0, maxI = listaInimigos.length; i < maxI; i++) {
+//        inimigosDoMapa = this.mapaGlobal.findObjectsByType(listaInimigos[i].nome);
+//        for (j = 0, maxJ = inimigosDoMapa.length; j < maxJ; j++) {
+//            inimigo = new listaInimigos[i].Classe(this.game, inimigosDoMapa[j].x, inimigosDoMapa[j].y, listaInimigos[i].key, 0, this.easystar, this.layerChaoVisivel);
+//            inimigo.cria();
+//            inimigo.outOfBoundsKill = true;
+//            inimigo.checkWorldBounds = true;
+//            this.inimigos.add(inimigo);
+//        }
+//    }
+//    this.inimigos.sort();
+//};
 
-    this.somFase = this.game.add.audio('somFase');
-    this.somFase.volume = 0.1;
-    this.somFase.loopFull();
-};
-
-Calciumtrice.prototype.criaPathFinder = function (dadosLayerTilemap, listaTilesPermitidos) {
-    this.easystar = new EasyStar.js();
-    var matrix = this.montaMatrixPathFinder(dadosLayerTilemap);
-    this.easystar.setGrid(matrix);
-    this.easystar.setAcceptableTiles(listaTilesPermitidos);
-};
-
-Calciumtrice.prototype.montaMatrixPathFinder = function (propriedadesLayer) {
-    var matrixPropriedades = [];
-    var countPropriedadesColuna, j, countPropriedadesLinha, i;
-    var countPropriedadesLinha = propriedadesLayer.length;
-    for (i = 0; i < countPropriedadesLinha; i++) {
-        matrixPropriedades[i] = [];
-        countPropriedadesColuna = propriedadesLayer[i].length;
-        for (j = 0; j < countPropriedadesColuna; j++) {
-            matrixPropriedades[i][j] = propriedadesLayer[i][j].index;
-        }
-    }
-    return matrixPropriedades;
-};
-
-Calciumtrice.prototype.criaInimigos = function (listaInimigos) {
+Calciumtrice.prototype.criaInimigo = function(_inimigos,_mapaGlobalLayer){
+    var listaInimigos = [{nome: 'spawnInimigoFacil',key: 'heroi',Classe: Fraco},
+                         {nome: 'spawnInimigoMedio',key: 'commando',Classe: Commando},
+                         {nome: 'spawnInimigoDificil',key: 'hellKnight',Classe: HellKnight}];
     var inimigosDoMapa, inimigo;
-    this.inimigos = this.game.add.group();
+    var inimigos = _inimigos;
     var i, j, maxI, maxJ;
     for (i = 0, maxI = listaInimigos.length; i < maxI; i++) {
         inimigosDoMapa = this.mapaGlobal.findObjectsByType(listaInimigos[i].nome);
+        console.log(inimigosDoMapa);
         for (j = 0, maxJ = inimigosDoMapa.length; j < maxJ; j++) {
-            inimigo = new listaInimigos[i].Classe(this.game, inimigosDoMapa[j].x, inimigosDoMapa[j].y, listaInimigos[i].key, 0, this.easystar, this.layerChaoVisivel);
+            inimigo = new listaInimigos[i].Classe(this.game, inimigosDoMapa[j].x, inimigosDoMapa[j].y, listaInimigos[i].key, 0, this.layerChaoVisivel, _inimigos, _mapaGlobalLayer);
             inimigo.cria();
             inimigo.outOfBoundsKill = true;
             inimigo.checkWorldBounds = true;
-            this.inimigos.add(inimigo);
+            inimigos.add(inimigo);
         }
     }
-    this.inimigos.sort();
+    inimigos.sort();
 };
 
 Calciumtrice.prototype.criaPortas = function (_tipo, _mapa) {
@@ -100,14 +92,14 @@ Calciumtrice.prototype.aplicaMascara = function (graficoDaMascara, listaElemento
 };
 
 Calciumtrice.prototype.criaHud = function () {
-    this.hud = this.game.add.sprite(50, 400, 'hud');
-    this.hud.scale.set(0.6);
+    this.hud = this.game.add.sprite(750, 480, 'hud');
+//    this.hud.scale.set(0.6);
     this.hud.fixedToCamera = true;
 
-    this.vidaJogador = this.game.add.text(76, 502, '100/100', {font: "24px Arial", fill: "#fdb317", align: "center"});
+    this.vidaJogador = this.game.add.text(650, 560, '100/100', {font: "24px Arial", fill: "#e82d00", align: "center"});
     this.vidaJogador.fixedToCamera = true;
 
-    this.tirosJogador = this.game.add.text(76, 442, '25', {font: "24px Arial", fill: "#fdb317", align: "center"});
+    this.tirosJogador = this.game.add.text(710, 530, '20', {font: "24px Arial", fill: "#fdb317", align: "center"});
     this.tirosJogador.fixedToCamera = true;
 };
 
@@ -145,3 +137,8 @@ Calciumtrice.prototype.fimDeJogo = function () {
         this.state.start('faleceuState');
     }, this);
 };
+
+//Calciumtrice.prototype.pauseJogo = function(){
+//    
+//    this.game.physics.arcade.isPaused = (this.game.physics.arcade.isPaused) ? false : true;
+//};

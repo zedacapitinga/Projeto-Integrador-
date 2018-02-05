@@ -5,21 +5,26 @@ Calciumtrice.Preload = function(){};
 Calciumtrice.Preload.prototype ={
     preload: function(){
         this.preloadBar = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'loading');
-        this.preloadBar.anchor.setTo(0,5);
+        this.preloadBar.anchor.setTo(0.5);
         this.load.setPreloadSprite(this.preloadBar);       
         
-        this.load.tilemap('mapa01', 'assets/tilemap/mapa01.json', null, Phaser.Tilemap.TILED_JSON);
-        this.load.tilemap('mapa02', 'assets/tilemap/mapa02.json', null, Phaser.Tilemap.TILED_JSON);
-        this.load.tilemap('mapa03', 'assets/tilemap/mapa03.json', null, Phaser.Tilemap.TILED_JSON);
-        this.load.tilemap('mapa04', 'assets/tilemap/mapa04.json', null, Phaser.Tilemap.TILED_JSON);
-        this.load.tilemap('fase01', 'assets/tilemap/fase01.json', null, Phaser.Tilemap.TILED_JSON);
-        this.load.tilemap('fase02', 'assets/tilemap/fase02.json', null, Phaser.Tilemap.TILED_JSON);
+        this.load.image('doom_porta', 'assets/sprites/doom_porta.png');
+        this.load.image('sangue', 'assets/sprites/sangue.png');
+        this.load.spritesheet('novojogobt', 'assets/sprites/novojogobt.png', 280, 94);
+        this.load.spritesheet('continuabt', 'assets/sprites/continuarbt.png', 280, 94);
+        this.load.spritesheet('opcoesbt', 'assets/sprites/opcoesbt.png', 280, 94);
+        this.load.image('projetil', 'assets/sprites/projetil.png');
+        this.load.image('somIcone', 'assets/sprites/somIcone.png');
         
         this.load.image('grassLandTileset', 'assets/tileset/grassland.png');
-        this.load.image('finalFantasyTileset', 'assets/tileset/tileSetFinalFantasy32X32.png');
         this.load.image('porta', 'assets/sprites/porta.png');
         this.load.image('zero', 'assets/sprites/zero.png');
-        this.load.image('hud', 'assets/sprites/hud.png');
+		
+        this.load.spritesheet('hud', 'assets/sprites/hudMunArmaUm.png', 30, 106);
+//        this.load.spritesheet('arma', 'Assetestestes/armadeancorateste1.png', 5, 28);
+        
+        this.load.tilemap('mapaVariosInimigos', 'assets/tilemap/mapaTeste01.json', null, Phaser.Tilemap.TILED_JSON);
+
         this.load.image('faleceu', 'assets/sprites/fundo-game-over.png');
         this.load.image('fundoMenu', 'assets/sprites/fundo.png');
         this.load.spritesheet('heroi', 'assets/sprites/char.png', 55.5, 64.8);
@@ -39,6 +44,8 @@ Calciumtrice.Preload.prototype ={
         this.load.audio('somPortaA', 'assets/som/doorOpen_1.ogg');
         this.load.audio('somPortaF', 'assets/som/doorClose_4.ogg');
         
+        this.load.audio('somPassoConcreto', 'assets/som/somPassoConcreto.wav');
+        
         this.load.image('mira', 'assets/sprites/aim.png');
         
         this.game.time.advancedTiming = true;
@@ -46,7 +53,8 @@ Calciumtrice.Preload.prototype ={
         
     },
     create: function(){
-        iniciaBanco('mapa01');
+        iniciaBanco('fase_01');
+//         this.btStart = this.add.button( 400,  500, 'novojogobt', this.novoJogo, this, 1, 0, 1);
         this.state.start('menu');
     }
 };

@@ -1,16 +1,14 @@
-var Inimigo = function (_game, _x, _y, _key, _frame, _easyStar, _layer) {
+var Inimigo = function (_game, _x, _y, _key, _frame, _layer, _groupIni, _mapaGlobalayer) {
     Phaser.Sprite.call(this, _game, _x, _y, _key, _frame);
-    this.easyStar = _easyStar;
     this.layer = _layer;
     this.heroi;
-    //alterações feitas pelo roberto e na linah 109 3 111
     this.x = _x;
     this.y = _y;
     //-----------------------------
-
+    this.iniLayerMapaGlobal = _mapaGlobalayer;
     this.direcao;
     this.parado = false;
-    this.velocidade = 180;
+    this.velocidade = 199;
     this.vida = 100;
     this.dano = 10;
     this.velocidadeAtaque = 1;
@@ -20,13 +18,23 @@ var Inimigo = function (_game, _x, _y, _key, _frame, _easyStar, _layer) {
 
     this.shadow;
     this.distancia = 15;
+    
+    this.groupIni = _groupIni;
+    
+    this.criaPathFinder = function (dadosLayerTilemap, listaTilesPermitidos) {
+        this.easyStarIni = new EasyStar.js();
+        var matrix = this.montaMatrixPathFinder(dadosLayerTilemap);
+        this.easyStarIni.setGrid(matrix);
+        this.easyStarIni.setAcceptableTiles(listaTilesPermitidos);
+    }
+    
 }
 
 Inimigo.prototype = Object.create(Phaser.Sprite.prototype);
 Inimigo.prototype.constructor = Inimigo;
 
 Inimigo.prototype.norte = [17, 16, 15, 14, 13, 12, 11, 10, 9];
-Inimigo.prototype.sul = [62, 61, 60, 59, 58, 57, 56, 55, 54];
+Inimigo.prototype.sul = [0, 5, 13, 59, 58, 57, 56, 55, 54];
 Inimigo.prototype.leste = [35, 34, 33, 32, 31, 30, 29, 28, 27];
 Inimigo.prototype.oeste = [44, 43, 42, 41, 40, 39, 38, 37, 36];
 Inimigo.prototype.noroeste = [8, 7, 6, 5, 4, 3, 2, 1, 0];
@@ -44,7 +52,8 @@ Inimigo.prototype.cria = function () {
 
     this.criaSombra();
     this.criaAnimacoes();
-    this.criaAudio();
+    this.criaAudio();    
+    this.criaPathFinder(this.iniLayerMapaGlobal, [7, 1]);
 };
 
 Inimigo.prototype.criaAnimacoes = function () {
@@ -100,7 +109,7 @@ Inimigo.prototype.pathFind = function () {
             yHeroi = this.layer.getTileY(this.heroi.position.y),
             esteInimigo = this;
 
-
+    
     if (Math.abs(xInimigo - xHeroi) > this.distancia || Math.abs(yInimigo - yHeroi) > this.distancia) {
         this.parado = true;
         this.tocando = true;
@@ -110,10 +119,10 @@ Inimigo.prototype.pathFind = function () {
             this.somZumbi.play(('zumbi' + (Math.ceil(Math.random() * 24))));
             this.tocando = false
         }
-        this.easyStar.findPath(xInimigo, yInimigo, xHeroi, yHeroi, function (path) {
+        this.easyStarIni.findPath(xInimigo, yInimigo, xHeroi, yHeroi, function (path) {
             esteInimigo.pathFinded(path);
         });
-        this.easyStar.calculate();
+        this.easyStarIni.calculate();
     }
 };
 
@@ -128,7 +137,7 @@ Inimigo.prototype.pathFinded = function (path) {
     var atualPontoX = path[0].x;
     var atualPontoY = path[0].y;
 
-
+//aqui faz a sprite virar para direção que o path mandar
     if (proximoPontoX < atualPontoX && proximoPontoY < atualPontoY) {
         this.direcao = "NO";
         this.animations.play("NO");
@@ -172,7 +181,7 @@ Inimigo.prototype.pathFinded = function (path) {
 Inimigo.prototype.criaSombra = function () {
     this.shadow = this.game.add.sprite(this.position.x, this.position.y, 'tilesetSpriteSheet', 960);
     this.game.physics.arcade.enable(this.shadow);
-    this.shadow.alpha = 0;
+    this.shadow.alpha = 1;
     this.shadow.anchor.setTo(0.5, 1);
 
 //    this.shadow.position.set(100, 100);
@@ -183,16 +192,37 @@ Inimigo.prototype.criaSombra = function () {
 Inimigo.prototype.recebeDano = function () {
     var dano = 20;
     this.vida -= dano;
+    this.tint = "#0xFF0000";
+    var bloodHit = this.game.add.emitter(0, 0, 50);
+    bloodHit.makeParticles("sangue");
+    bloodHit.gravity = 200;
+    bloodHit.x = this.x - 10;
+    bloodHit.y = this.y - 32;
+//    bloodHit.scale.set(0.6);
+    bloodHit.start(true, 1000, null, 10);
+    var numeroRand = Math.floor(Math.random() * 6) + 64;
+    var sangueChao = this.game.add.sprite(this.x, this.y, "doom_tileset_spritesheet", numeroRand);
+    sangueChao.mask = this.mask;
     if (this.vida <= 0) {
+        this.somZumbi.destroy();
         this.kill();
+        this.groupIni.remove(this)
+//        this.easyStarIni.cancelPath(this.easyStarIni);
     }
+    this.game.time.events.add(150, function(){bloodHit.destroy(); this.tint = "0x00FF00"}, this);
+//    this.game.time.events.add(2000, function(){sangueChao.destroy();}, this);
+    
 };
+
+//UPDATE
 
 Inimigo.prototype.update = function () {
     this.shadow.body.velocity.x = 0;
     this.shadow.body.velocity.y = 0;
     if (this.alive) {
         this.pathFind();
+    }else{
+        this.removeAdditionalPointCost(this.shadow.body.x ,this.shadow.body.y);
     }
 };
 
@@ -205,4 +235,18 @@ Inimigo.prototype.ataque = function () {
         return true;
     }
     return false;
-}
+};
+
+Inimigo.prototype.montaMatrixPathFinder = function (propriedadesLayer) {
+    var matrixPropriedades = [];
+    var countPropriedadesColuna, j, countPropriedadesLinha, i;
+    var countPropriedadesLinha = propriedadesLayer.length;
+    for (i = 0; i < countPropriedadesLinha; i++) {
+        matrixPropriedades[i] = [];
+        countPropriedadesColuna = propriedadesLayer[i].length;
+        for (j = 0; j < countPropriedadesColuna; j++) {
+            matrixPropriedades[i][j] = propriedadesLayer[i][j].index;
+        }
+    }
+    return matrixPropriedades;
+};

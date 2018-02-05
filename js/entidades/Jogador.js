@@ -9,7 +9,7 @@ var Jogador = function (_game, _x, _y, _key, _frame) {
     this.vida = 100;
 
     this.mira;
-    this.numTiros = 25;
+    this.numTiros = 20;
     this.tempoProximoTiro = 0;
     this.carregando = false;
     this.danoTiro = 25;
@@ -37,14 +37,17 @@ var Jogador = function (_game, _x, _y, _key, _frame) {
     this.anchor.setTo(0.5, 0.98);
     this.game.camera.follow(this);
     this.criaSombra();
+    this.screenshakeAssJog;
+    this.tempoProximoPasso = 0;
+    this.frequenciaPasso = 800;
 };
 
 Jogador.prototype = Object.create(Phaser.Sprite.prototype);
 Jogador.prototype.constructor = Jogador;
 
 Jogador.prototype.velocidade = 50;
-
-Jogador.prototype.velocidadeTiro = 1000;
+//vai mudar para Arma
+Jogador.prototype.velocidadeTiro = 2000;
 Jogador.prototype.frequenciaTiro = 200;
 Jogador.prototype.maxTiros = 50;
 Jogador.prototype.tempoRecarregamentoArma = 1;
@@ -63,10 +66,11 @@ Jogador.prototype.mouse;
 
 Jogador.prototype.direcoes = ["N", "S", "L", "O", "NO", "NL", "SO", "SL"];
 
-Jogador.prototype.cria = function (layerOfWall) {
-    this.wallLayers = layerOfWall;
+Jogador.prototype.cria = function (_layerOfWall, _groupInimigos) {
+    this.wallLayers = _layerOfWall;
     this.criaAnimacoes();
     this.criaAudio();
+    this.groupInimigos = _groupInimigos;
 
     if (!this.tecla_Norte || !this.tecla_Sul || !this.tecla_Leste || !this.tecla_Oeste || !this.mouse) {
         this.criaInputs();
@@ -75,6 +79,10 @@ Jogador.prototype.cria = function (layerOfWall) {
     this.criaTiros();
     this.mira = this.game.add.sprite(0, 0, 'mira');
     this.mira.anchor.setTo(0.5);
+    this.camSpriteTeste = this.game.add.sprite(0, 0, 'mira');
+    this.camSpriteTeste.anchor.setTo(0.5);
+    this.camSpriteTeste.alpha = 0;
+    this.game.camera.follow(this.camSpriteTeste);
 };
 
 Jogador.prototype.criaAudio = function () {
@@ -86,21 +94,22 @@ Jogador.prototype.criaAudio = function () {
     this.somJogador.addMarker('burn', 2.789, 1.652);
     this.somJogador.addMarker('morte', 4.441, 1.152);
     this.somJogador.addMarker('granada', 5.593, 2.110);
+    this.somJogadorCaminhaConcreto = this.game.add.audio('somPassoConcreto', 0.5, false, true);
 }
 
 Jogador.prototype.criaTiros = function () {
     this.tiros = this.game.add.group();
     this.game.physics.arcade.enable(this.tiros);
     this.tiros.enableBody = true;
-    this.tiros.createMultiple(30, "tiro", 0, false);
+    this.tiros.createMultiple(30, "projetil", 0, false);
     this.tiros.forEach(function (sprite) {
         sprite.anchor.setTo(1, 0.5);
         sprite.outOfBoundsKill = true;
         sprite.checkWorldBounds = true;
-        sprite.animations.add('inicioTiro');
-        sprite.events.onAnimationComplete = function () {
-            this.frame = 8;
-        };
+//        sprite.animations.add('inicioTiro');
+//        sprite.events.onAnimationComplete = function () {
+//            this.frame = 8;
+//        };
     }, this);
 };
 
@@ -131,7 +140,7 @@ Jogador.prototype.criaInputs = function () {
     Jogador.prototype.tecla_Oeste = this.game.input.keyboard.addKey(Phaser.Keyboard.A);
     Jogador.prototype.tecla_Corrida = this.game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
     Jogador.prototype.tecla_Recarrega = this.game.input.keyboard.addKey(Phaser.Keyboard.R);
-    Jogador.prototype.mouse = this.game.input.mousePointer;
+    Jogador.prototype.mouseJogador = this.game.input.mousePointer;
 };
 
 Jogador.prototype.criaSombra = function () {
@@ -142,28 +151,29 @@ Jogador.prototype.criaSombra = function () {
     this.shadow.body.immovable = true;
 };
 
-Jogador.prototype.setGroupInimigos = function (_groupInimigos) {
-    this.groupInimigos = _groupInimigos;
-};
-
 Jogador.prototype.setHud = function (_hudTiro, _hudVida) {
     this.hudTiro = _hudTiro;
     this.hudVida = _hudVida;
 };
 
+//                 UPDATE
 Jogador.prototype.update = function () {
     var _self = this;
-    var mouseX = this.mouse.worldX;
-    var mouseY = this.mouse.worldY;
+    var mouseX = this.mouseJogador.worldX;
+    var mouseY = this.mouseJogador.worldY;
     this.shadow.body.velocity.y = 0;
     this.shadow.body.velocity.x = 0;
+    this.mouseXCamTeste = (this.mouseJogador.worldX + this.shadow.x) /2;
+    this.mouseYCamTeste = (this.mouseJogador.worldY + this.shadow.y) /2;    
+    this.camSpriteTeste.x = this.mouseXCamTeste;
+    this.camSpriteTeste.y = this.mouseYCamTeste;
     var radianos = Math.atan2(this.y - mouseY, this.x - mouseX);
     this.mira.position.setTo(mouseX, mouseY);
     this.desenhaLuz(radianos);
     var direcao = this.direcaoJogador(radianos);
-    if (this.tecla_Recarrega.isDown && !this.carregando) {
+    if (this.tecla_Recarrega.isDown && !this.carregando && this.numTiros != 20) {
         this.recarrega();
-    } else if (this.mouse.isDown) {
+    } else if (this.mouseJogador.isDown) {
         this.atira(mouseX, mouseY);
     }
     if (this.tecla_Norte.isDown || this.tecla_Sul.isDown || this.tecla_Leste.isDown || this.tecla_Oeste.isDown) {
@@ -196,7 +206,7 @@ Jogador.prototype.recarrega = function () {
 };
 
 Jogador.prototype.fimRecarrega = function () {
-    this.numTiros = 25;
+    this.numTiros = 20;
     this.carregando = false;
 };
 
@@ -218,7 +228,7 @@ Jogador.prototype.atira = function (mouseX, mouseY) {
             tiro.reset(this.position.x + 15, this.position.y - this.height / 2);
         }
         tiro.rotation = this.game.physics.arcade.moveToPointer(tiro, this.velocidadeTiro, this.mouse);
-        tiro.animations.play("inicioTiro");
+//        tiro.animations.play("inicioTiro");
     }
 };
 
@@ -340,6 +350,7 @@ Jogador.prototype.jogadorAnda = function (direcao) {
 
     if (this.tecla_Corrida.isDown) {
         velocidadeAtual *= 2.5;
+     
     }
 
     if (this.tecla_Norte.isDown) {
@@ -368,15 +379,34 @@ Jogador.prototype.jogadorAnda = function (direcao) {
         }
     }
     this.animations.play(animacao);
+    
+    
+    
+    if (this.game.time.now > this.tempoProximoPasso) {
+        this.somJogadorCaminhaConcreto.play();
+        
+        this.tempoProximoPasso = this.game.time.now + this.frequenciaPasso;
+        
+    }    
 };
 
 Jogador.prototype.recebeAtaque = function (_inimigo) {
+    if (this.vida <= 0) {
+        return false;
+    }
     if (_inimigo.ataque()) {
         this.somJogador.play('dano');
         this.vida -= _inimigo.dano;
-    }
-    if (this.vida <= 0) {
-        return false;
+        var bloodHit = this.game.add.emitter(0, 0, 100);
+        bloodHit.makeParticles("sangue");
+        bloodHit.gravity = 200;
+        bloodHit.x = this.x - 10;
+        bloodHit.y = this.y - 32;
+        bloodHit.start(true, 1000, null, 10);
+        var numeroRand = Math.floor(Math.random() * 6) + 64;
+        var sangueChao = this.game.add.sprite(this.shadow.x - 10, this.shadow.y - 20, "doom_tileset_spritesheet", numeroRand);
+        sangueChao.mask = this.mask;
+        this.game.time.events.add(2000, function(){bloodHit.destroy();}, this);
     }
     return true;
 };
@@ -384,7 +414,7 @@ Jogador.prototype.recebeAtaque = function (_inimigo) {
 Jogador.prototype.mataBala = function (bala, _inimigo) {
     bala.kill();
     _inimigo.recebeDano(this.danoTiro);
-    this.animacaoBala(bala);
+//    this.animacaoBala(bala);
 };
 
 Jogador.prototype.mataBalaParede = function (bala, parede) {

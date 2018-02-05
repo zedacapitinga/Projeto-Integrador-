@@ -48,6 +48,7 @@ Fase_01.prototype.update = function () {
     if (this.jogador.vida < 1) {
         this.fimDeJogo();
     }
+    this.hud.frame = this.jogador.numTiros;
 
     this.game.physics.arcade.collide(this.jogador.shadow, this.layerParede);
     this.game.physics.arcade.collide(this.jogador.shadow, this.saida, this.passaFase, null, this);

@@ -6,6 +6,7 @@ Calciumtrice.Boot = function(){
 
 Calciumtrice.Boot.prototype = {
     preload: function(){
+//        this.load.image('loading', 'assets/sprites/fundo1.png');
         this.load.image('loading', 'assets/sprites/loading.png');
     },
     create: function(){
