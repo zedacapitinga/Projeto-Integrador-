@@ -13,7 +13,6 @@ var Inimigo = function (_game, _x, _y, _key, _frame, _layer, _groupIni, _mapaGlo
     this.dano = 10;
     this.velocidadeAtaque = 1;
     this.modoAtacando = true;
-
     this.tocando = true;
 
     this.shadow;
@@ -198,11 +197,13 @@ Inimigo.prototype.recebeDano = function () {
     bloodHit.gravity = 200;
     bloodHit.x = this.x - 10;
     bloodHit.y = this.y - 32;
-//    bloodHit.scale.set(0.6);
     bloodHit.start(true, 1000, null, 10);
     var numeroRand = Math.floor(Math.random() * 6) + 64;
     var sangueChao = this.game.add.sprite(this.x, this.y, "doom_tileset_spritesheet", numeroRand);
     sangueChao.mask = this.mask;
+    //bringToTop estudar sobre isso
+    //nao usar isso sprite.z
+    sangueChao.z = 0;
     if (this.vida <= 0) {
         this.somZumbi.destroy();
         this.kill();

@@ -8,15 +8,19 @@ var Jogador = function (_game, _x, _y, _key, _frame) {
 
     this.vida = 100;
 
+    this.armasJogador = [];
+    
+    
     this.mira;
     this.numTiros = 20;
     this.tempoProximoTiro = 0;
     this.carregando = false;
-    this.danoTiro = 25;
+    this.danoTiro = 25;    
+    this.tiros;
+    
     this.hudTiro;
     this.hudVida;
 
-    this.tiros;
     this.luz = this.game.add.graphics(0, 0);
     this.shadow;
 
@@ -37,7 +41,6 @@ var Jogador = function (_game, _x, _y, _key, _frame) {
     this.anchor.setTo(0.5, 0.98);
     this.game.camera.follow(this);
     this.criaSombra();
-    this.screenshakeAssJog;
     this.tempoProximoPasso = 0;
     this.frequenciaPasso = 800;
 };
@@ -161,16 +164,20 @@ Jogador.prototype.update = function () {
     var _self = this;
     var mouseX = this.mouseJogador.worldX;
     var mouseY = this.mouseJogador.worldY;
+    
     this.shadow.body.velocity.y = 0;
     this.shadow.body.velocity.x = 0;
+    
     this.mouseXCamTeste = (this.mouseJogador.worldX + this.shadow.x) /2;
     this.mouseYCamTeste = (this.mouseJogador.worldY + this.shadow.y) /2;    
     this.camSpriteTeste.x = this.mouseXCamTeste;
     this.camSpriteTeste.y = this.mouseYCamTeste;
     var radianos = Math.atan2(this.y - mouseY, this.x - mouseX);
     this.mira.position.setTo(mouseX, mouseY);
+    
     this.desenhaLuz(radianos);
     var direcao = this.direcaoJogador(radianos);
+    
     if (this.tecla_Recarrega.isDown && !this.carregando && this.numTiros != 20) {
         this.recarrega();
     } else if (this.mouseJogador.isDown) {

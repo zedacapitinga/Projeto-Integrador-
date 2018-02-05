@@ -46,13 +46,12 @@ Fase_01.prototype.update = function () {
         this.fimDeJogo();
     }
     
-    
     this.hud.frame = this.jogador.numTiros;
     
     this.game.physics.arcade.collide(this.jogador.shadow, this.layerParede);
-//    this.game.physics.arcade.collide(this.jogador.shadow, this.saida, this.passaFase, null, this);
     this.game.physics.arcade.collide(this.inimigos.shadow, this.layerParede);
     this.game.physics.arcade.collide(this.jogador.shadow, this.inimigos.shadow);
+//    this.game.physics.arcade.collide(this.jogador.shadow, this.saida, this.passaFase, null, this);
 
     this.inimigos.sort('y', Phaser.Group.SORT_ASCENDING);
 	
