@@ -56,7 +56,6 @@ Calciumtrice.prototype.criaInimigo = function(_inimigos,_mapaGlobalLayer){
     var i, j, maxI, maxJ;
     for (i = 0, maxI = listaInimigos.length; i < maxI; i++) {
         inimigosDoMapa = this.mapaGlobal.findObjectsByType(listaInimigos[i].nome);
-        console.log(inimigosDoMapa);
         for (j = 0, maxJ = inimigosDoMapa.length; j < maxJ; j++) {
             inimigo = new listaInimigos[i].Classe(this.game, inimigosDoMapa[j].x, inimigosDoMapa[j].y, listaInimigos[i].key, 0, this.layerChaoVisivel, _inimigos, _mapaGlobalLayer);
             inimigo.cria();
@@ -126,14 +125,12 @@ Calciumtrice.prototype.macaneta = function (player, doorSprite) {
 };
 
 Calciumtrice.prototype.fimDeJogo = function () {
-    this.somFase.pause();
     var telaFimDeJogo = this.game.add.sprite(0, 0, "faleceu");
     telaFimDeJogo.fixedToCamera = true;
     telaFimDeJogo.alpha = 0.01;
     this.game.add.tween(telaFimDeJogo).to({alpha: 0.5}, 2000, "Linear", true);
     this.game.time.events.add(Phaser.Timer.SECOND * 3, function () {
         telaFimDeJogo.destroy();
-        this.somFase.destroy();
         this.state.start('faleceuState');
     }, this);
 };
