@@ -18,6 +18,8 @@ Calciumtrice.Preload.prototype ={
         this.load.image('projetil', 'assets/sprites/projetil.png');
         this.load.image('somIcone', 'assets/sprites/somIcone.png');
         
+        this.load.image('corpoMorto', 'assets/sprites/charmorto.png');
+        
         this.load.image('grassLandTileset', 'assets/tileset/grassland.png');
         this.load.image('porta', 'assets/sprites/porta.png');
         this.load.image('zero', 'assets/sprites/zero.png');

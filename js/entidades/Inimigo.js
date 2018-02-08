@@ -207,7 +207,8 @@ Inimigo.prototype.recebeDano = function () {
     if (this.vida <= 0) {
         this.somZumbi.destroy();
         this.kill();
-        this.groupIni.remove(this)
+        this.groupIni.remove(this);
+        var corpoMorto = this.game.add.sprite(this.position.x, this.position.y, 'corpoMorto', 0);
 //        this.easyStarIni.cancelPath(this.easyStarIni);
     }
     this.game.time.events.add(150, function(){bloodHit.destroy(); this.tint = "0x00FF00"}, this);
