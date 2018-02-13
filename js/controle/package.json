@@ -1,0 +1,26 @@
+{
+  "name": "projeto-phaser",
+  "version": "1.0.0",
+  "description": "Projeto integrador do curso Senac",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jerenaux/phaserquest"
+  },
+  "keywords": [
+    "Phaser",
+    "online",
+    "game",
+    "html5"
+  ],
+  "author": "Roberto",
+  "license": "MIT",
+  "homepage": "https://github.com/Jerenaux/phaserquest#readme",
+  "dependencies": {
+    "pathfinding": "^0.4.18",
+  }
+}
