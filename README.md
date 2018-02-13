@@ -6,4 +6,4 @@ Deangelis Pedro;
 Marcelo Costa;
 Roberto Monteiro;
 
-[Jogo] https://rmonteiro95.github.io/Projeto-Integrador-/
+[Jogo] (https://rmonteiro95.github.io/Projeto-Integrador-/)
