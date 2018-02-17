@@ -1,5 +1,5 @@
 # Projeto-Integrador
-###Este é o projeto final do semestre do curso Técnico em Jogos Digitais do Senac.
+### Este é o projeto final do semestre do curso Técnico em Jogos Digitais do Senac.
 
 Envolvidos no projeto:
 
