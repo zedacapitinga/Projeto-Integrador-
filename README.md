@@ -8,3 +8,5 @@ Envolvidos no projeto:
 - Roberto Monteiro;
 
 [Jogo] (https://rmonteiro95.github.io/Projeto-Integrador-/)
+
+Phaser, html5, javascript;
