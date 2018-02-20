@@ -98,7 +98,7 @@ Calciumtrice.prototype.criaHud = function () {
     this.vidaJogador = this.game.add.text(650, 560, '100/100', {font: "24px Arial", fill: "#e82d00", align: "center"});
     this.vidaJogador.fixedToCamera = true;
 
-    this.tirosJogador = this.game.add.text(710, 530, '20', {font: "24px Arial", fill: "#fdb317", align: "center"});
+    this.tirosJogador = this.game.add.text(300, 530, '20', {font: "24px Arial", fill: "#fdb317", align: "center"});
     this.tirosJogador.fixedToCamera = true;
 };
 

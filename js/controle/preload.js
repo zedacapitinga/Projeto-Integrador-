@@ -16,6 +16,7 @@ Calciumtrice.Preload.prototype ={
         this.load.spritesheet('doom_tileset_spritesheet', 'assets/Tileset/doom_tileset_img.png', 32, 32);
         
         this.load.image('projetil', 'assets/sprites/projetil.png');
+        this.load.spritesheet('projetil2', 'assets/sprites/projetil2.png', 14, 12);
         this.load.image('somIcone', 'assets/sprites/somIcone.png');
         
         this.load.image('corpoMorto', 'assets/sprites/charmorto.png');

@@ -54,6 +54,8 @@ Jogador.prototype.velocidadeTiro = 2000;
 Jogador.prototype.frequenciaTiro = 200;
 Jogador.prototype.maxTiros = 50;
 Jogador.prototype.tempoRecarregamentoArma = 1;
+//aqui teste arma
+Jogador.prototype.tempoUltimoTiro = 0;
 
 Jogador.prototype.aberturaLuz = Math.PI * 2;
 Jogador.prototype.comprimentoLuz = 75;
@@ -79,7 +81,7 @@ Jogador.prototype.cria = function (_layerOfWall, _groupInimigos) {
         this.criaInputs();
     }
 
-    this.criaTiros();
+    this.criaTiros();    
     this.mira = this.game.add.sprite(0, 0, 'mira');
     this.mira.anchor.setTo(0.5);
     this.camSpriteTeste = this.game.add.sprite(0, 0, 'mira');
@@ -104,15 +106,15 @@ Jogador.prototype.criaTiros = function () {
     this.tiros = this.game.add.group();
     this.game.physics.arcade.enable(this.tiros);
     this.tiros.enableBody = true;
-    this.tiros.createMultiple(30, "projetil", 0, false);
+    this.tiros.createMultiple(30, "projetil2", 0, false);
     this.tiros.forEach(function (sprite) {
-        sprite.anchor.setTo(1, 0.5);
+        sprite.anchor.setTo(0.5);
         sprite.outOfBoundsKill = true;
         sprite.checkWorldBounds = true;
-//        sprite.animations.add('inicioTiro');
-//        sprite.events.onAnimationComplete = function () {
-//            this.frame = 8;
-//        };
+        sprite.animations.add('inicioTiro');
+        sprite.events.onAnimationComplete = function () {
+            this.frame = 1;
+        };
     }, this);
 };
 
@@ -174,14 +176,13 @@ Jogador.prototype.update = function () {
     this.camSpriteTeste.y = this.mouseYCamTeste;
     var radianos = Math.atan2(this.y - mouseY, this.x - mouseX);
     this.mira.position.setTo(mouseX, mouseY);
-    
     this.desenhaLuz(radianos);
     var direcao = this.direcaoJogador(radianos);
     
     if (this.tecla_Recarrega.isDown && !this.carregando && this.numTiros != 20) {
         this.recarrega();
     } else if (this.mouseJogador.isDown) {
-        this.atira(mouseX, mouseY);
+        this.atira();
     }
     if (this.tecla_Norte.isDown || this.tecla_Sul.isDown || this.tecla_Leste.isDown || this.tecla_Oeste.isDown) {
         this.jogadorAnda(direcao);
@@ -202,8 +203,12 @@ Jogador.prototype.update = function () {
     this.game.physics.arcade.overlap(this.shadow, this.groupInimigos, function (_sombra, _inimigo) {
         _self.recebeAtaque(_inimigo);
     });
-    this.hudTiro.setText(this.numTiros);
-    this.hudVida.setText(this.vida + "/100");
+    this.pontoX = this.x - this.mouseJogador.worldX;
+    this.pontoY = this.y - this.mouseJogador.worldY;
+    this.hudTiro.setText(this.pontoX + ',' + this.pontoY);
+//    this.hudTiro.setText(this.numTiros);
+    this.hudVida.setText(this.vida + "/100");   
+    
 };
 
 Jogador.prototype.recarrega = function () {
@@ -217,7 +222,7 @@ Jogador.prototype.fimRecarrega = function () {
     this.carregando = false;
 };
 
-Jogador.prototype.atira = function (mouseX, mouseY) {
+Jogador.prototype.atira = function () {
     if (this.numTiros <= 0) {
         return;
     }
@@ -226,16 +231,26 @@ Jogador.prototype.atira = function (mouseX, mouseY) {
     }
     if (this.game.time.now > this.tempoProximoTiro && this.tiros.countDead() > 0) {
         this.somJogador.play('tiro');
-        this.numTiros--;
+        this.numTiros--;        
         this.tempoProximoTiro = this.game.time.now + this.frequenciaTiro;
         var tiro = this.tiros.getFirstExists(false);
-        if (mouseX > this.world.x) {
-            tiro.reset(this.position.x - 15, this.position.y - this.height / 2);
-        } else {
-            tiro.reset(this.position.x + 15, this.position.y - this.height / 2);
+            tiro.reset(this.position.x, this.position.y - this.height / 2);
+        
+        console.log(this.tempoUltimoTiro - this.tempoProximoTiro);
+        
+        if((this.tempoProximoTiro - this.tempoUltimoTiro) < 500  ){
+        console.log("rajada");
+            //aqui ao inves de dar o mouse como angulo trocar para o angulo com ou sem precisao
+            tiro.rotation = this.game.physics.arcade.moveToPointer(tiro, this.velocidadeTiro, this.mouseJogador);
+            tiro.animations.play("inicioTiro", 45);
+            this.tempoUltimoTiro = this.game.time.now;
         }
-        tiro.rotation = this.game.physics.arcade.moveToPointer(tiro, this.velocidadeTiro, this.mouse);
-//        tiro.animations.play("inicioTiro");
+        else{
+        console.log("rip");
+            tiro.rotation = this.game.physics.arcade.moveToPointer(tiro, this.velocidadeTiro, this.mouseJogador); 
+            tiro.animations.play("inicioTiro", 45);
+            this.tempoUltimoTiro = this.game.time.now;
+        }
     }
 };
 
@@ -251,11 +266,12 @@ Jogador.prototype.desenhaLuz = function (radianos) {
     this.luz.moveTo(this.position.x, this.position.y);
     for (var j = 0; j < this.raiosLuz; j++) {
         if (j >= 135 && j <= 225) {
-            distAtual = comprimentoGrande * 2;
+            distAtual = comprimentoGrande * 3;
         } else {
             distAtual = comprimentoPequeno;
         }
         anguloRaio = radianos - (this.aberturaLuz / 2) + (this.aberturaLuz / this.raiosLuz) * j;
+        
         ultimoX = this.position.x - distAtual * Math.cos(anguloRaio);
         ultimoY = this.position.y - distAtual * Math.sin(anguloRaio);
 
@@ -284,10 +300,18 @@ Jogador.prototype.desenhaLuz = function (radianos) {
 
 Jogador.prototype.direcaoJogador = function (radianos) {
     var angulo = radianos * (180 / Math.PI);
-    if (angulo > 0) {
-        angulo -= 180;
-    } else {
-        angulo += 180;
+    var anguloTTeste;
+    //para virar o 0 para o lado esquerdo
+    if (angulo > 0) {    
+        angulo -= 180; 
+//        angulo = Math.abs(angulo + 360); 
+        
+        console.log(angulo);
+    } 
+    else {
+        angulo += 180; 
+        anguloTTeste = Math.abs(angulo - 360); 
+        console.log(anguloTTeste);
     }
     if (angulo > -112 && angulo < -67) {
         //cima N
@@ -437,3 +461,21 @@ Jogador.prototype.animacaoBala = function (_bala) {
     this.toon.scale.set(0.5);
     animacao.play(200, false, true);
 };
+
+Jogador.prototype.anguloMouseJogador = function(_radianos){
+    var angulo = _radianos * (180 / Math.PI);
+    var anguloTTeste;
+    //para virar o 0 para o lado esquerdo
+    if (angulo > 0) {    
+        angulo -= 180; 
+//        angulo = Math.abs(angulo + 360); 
+        
+        console.log(angulo);
+    } 
+    else {
+        angulo += 180; 
+        anguloTTeste = Math.abs(angulo - 360); 
+        console.log(anguloTTeste);
+    }
+    
+}

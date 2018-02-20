@@ -66,6 +66,8 @@ Fase_01.prototype.update = function () {
 
 Fase_01.prototype.render = function () {
     Calciumtrice.game.debug.text(Calciumtrice.game.time.fps || '--', 2, 14, "#ff0000");
+    Calciumtrice.game.debug.text(this.jogador.aberturaLuz, 50, 44, "#ff0000");
+    
 };
 
 //Fase_01.prototype.criaLayersTelhados = function () {
