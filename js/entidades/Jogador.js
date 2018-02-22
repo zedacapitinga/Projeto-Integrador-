@@ -178,6 +178,7 @@ Jogador.prototype.update = function () {
     this.mira.position.setTo(mouseX, mouseY);
     this.desenhaLuz(radianos);
     var direcao = this.direcaoJogador(radianos);
+//    this.anguloMouseJogador(radianos);
     
     if (this.tecla_Recarrega.isDown && !this.carregando && this.numTiros != 20) {
         this.recarrega();
@@ -223,6 +224,7 @@ Jogador.prototype.fimRecarrega = function () {
 };
 
 Jogador.prototype.atira = function () {
+    var mousePrecisao = this.mouseJogador;
     if (this.numTiros <= 0) {
         return;
     }
@@ -236,12 +238,16 @@ Jogador.prototype.atira = function () {
         var tiro = this.tiros.getFirstExists(false);
             tiro.reset(this.position.x, this.position.y - this.height / 2);
         
-        console.log(this.tempoUltimoTiro - this.tempoProximoTiro);
+//        console.log(this.tempoUltimoTiro - this.tempoProximoTiro);
         
         if((this.tempoProximoTiro - this.tempoUltimoTiro) < 500  ){
         console.log("rajada");
+            //mecher no worldX do mouse pra ficar no modo rajada
             //aqui ao inves de dar o mouse como angulo trocar para o angulo com ou sem precisao
-            tiro.rotation = this.game.physics.arcade.moveToPointer(tiro, this.velocidadeTiro, this.mouseJogador);
+//            mousePrecisao.worldX = mousePrecisao.worldX + Math.floor(Math.random() * 5);
+//            mousePrecisao.worldY = mousePrecisao.worldY + Math.floor(Math.random() * 5);
+            tiro.rotation = this.moveToPontero(tiro, this.velocidadeTiro, mousePrecisao);
+//            tiro.rotation = this.game.physics.arcade.moveToPointer(tiro, this.velocidadeTiro, mousePrecisao);
             tiro.animations.play("inicioTiro", 45);
             this.tempoUltimoTiro = this.game.time.now;
         }
@@ -255,7 +261,7 @@ Jogador.prototype.atira = function () {
 };
 
 Jogador.prototype.desenhaLuz = function (radianos) {
-    var comprimentoGrande = 2 * this.comprimentoLuz;
+    var comprimentoGrande = 3 * this.comprimentoLuz;
     var comprimentoPequeno = this.comprimentoLuz;
     var distAtual, anguloRaio, ultimoX, ultimoY, listaTiles, menorDistancia;
     var xTile, yTile, xAtual, yAtual, distanciaAtual;
@@ -300,18 +306,18 @@ Jogador.prototype.desenhaLuz = function (radianos) {
 
 Jogador.prototype.direcaoJogador = function (radianos) {
     var angulo = radianos * (180 / Math.PI);
-    var anguloTTeste;
+//    var anguloTTeste;
     //para virar o 0 para o lado esquerdo
     if (angulo > 0) {    
         angulo -= 180; 
 //        angulo = Math.abs(angulo + 360); 
-        
-        console.log(angulo);
+//        
+//        console.log(angulo);
     } 
     else {
         angulo += 180; 
-        anguloTTeste = Math.abs(angulo - 360); 
-        console.log(anguloTTeste);
+//        anguloTTeste = Math.abs(angulo - 360); 
+//        console.log(anguloTTeste);
     }
     if (angulo > -112 && angulo < -67) {
         //cima N
@@ -478,4 +484,54 @@ Jogador.prototype.anguloMouseJogador = function(_radianos){
         console.log(anguloTTeste);
     }
     
+}
+
+Jogador.prototype.moveToPontero = function(displayObject, speed, pointer, maxTime){
+    //funçao do phaser editada porque eu quero usar o angleToPointer (agr anguloToPontero)
+    //para fazer a pricisao da arma, depois fazer calculos em radianos que facilita... talves
+    if (typeof speed === 'undefined') { speed = 60; }
+    var pointer = this.game.input.activePointer;
+    if (typeof maxTime === 'undefined') { maxTime = 0; }
+
+    var angle = this.anguloToPontero(displayObject, pointer);
+
+    if (maxTime > 0)
+    {
+        //  We know how many pixels we need to move, but how fast?
+        speed = this.game.distanceToPointer(displayObject, pointer) / (maxTime / 1000);
+    }
+
+    displayObject.body.velocity.x = Math.cos(angle) * speed;
+    displayObject.body.velocity.y = Math.sin(angle) * speed;
+
+    return angle;
+
+}
+
+Jogador.prototype.anguloToPontero = function(displayObject, pointer){
+
+    var pointer = this.game.input.activePointer;
+
+    var dx = pointer.worldX - displayObject.x;
+    var dy = pointer.worldY - displayObject.y;
+    
+    if(dx > 0){
+        dx = dx + Math.floor(Math.random() * 100);
+    }
+    else{
+        dx = dx - Math.floor(Math.random() * 100);
+    }
+    if(dy > 0){
+        dy = dy + Math.floor(Math.random() * 100);
+    }
+    else{
+        dy = dy - Math.floor(Math.random() * 100);
+    }
+    console.log(dx);
+    console.log(dx);
+    console.log(pointer.worldX - displayObject.x);
+    console.log(pointer.worldY - displayObject.y);
+    
+    return Math.atan2(dy, dx);
+
 }

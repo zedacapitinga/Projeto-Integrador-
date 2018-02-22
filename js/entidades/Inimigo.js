@@ -205,6 +205,7 @@ Inimigo.prototype.recebeDano = function () {
     //nao usar isso sprite.z
     sangueChao.z = 0;
     if (this.vida <= 0) {
+        console.log(this);
         this.somZumbi.destroy();
         this.kill();
         this.groupIni.remove(this);
