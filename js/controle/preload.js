@@ -32,6 +32,7 @@ Calciumtrice.Preload.prototype ={
 
         this.load.image('faleceu', 'assets/sprites/fundo-game-over.png');
         this.load.image('fundoMenu', 'assets/sprites/fundo.png');
+        this.load.image('ak47IconHud', 'assets/sprites/ak47icongame.png');
         this.load.spritesheet('heroi', 'assets/sprites/char.png', 55.5, 64.8);
         this.load.spritesheet('hellKnight', 'assets/sprites/hellKnight.png', 70, 81);
         this.load.spritesheet('commando', 'assets/sprites/commando.png', 72, 67);

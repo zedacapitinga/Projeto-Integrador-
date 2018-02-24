@@ -25,10 +25,13 @@ Fase_01.prototype.create = function () {
 //    this.saida.enableBody = true;
     
     this.inimigos = this.game.add.group();
-    this.criaInimigo(this.inimigos, this.mapaGlobal.layer.data);   
-
+    this.cadaveresInimigos = this.game.add.group();
+    this.criaInimigo(this.inimigos, this.mapaGlobal.layer.data, this.cadaveresInimigos);   
+    
+    this.listaJogadores = this.game.add.group();
     this.jogador = this.mapaGlobal.createFromObject('objetos', 9, 'heroi', 0, true, true, Jogador);
     this.jogador.cria(this.layerParede, this.inimigos);
+    this.listaJogadores.add(this.jogador);
     this.criaHud();
     this.setAlvoDosInimigos(this.jogador.shadow, this.inimigos);    
     this.aplicaMascara(this.jogador.luz, [this.layerChao, this.inimigos]);

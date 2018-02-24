@@ -95,11 +95,15 @@ Calciumtrice.prototype.criaHud = function () {
 //    this.hud.scale.set(0.6);
     this.hud.fixedToCamera = true;
 
-    this.vidaJogador = this.game.add.text(650, 560, '100/100', {font: "24px Arial", fill: "#e82d00", align: "center"});
+    this.vidaJogador = this.game.add.text(30, 560, '100/100', {font: "24px Arial", fill: "#e82d00", align: "center"});
     this.vidaJogador.fixedToCamera = true;
 
-    this.tirosJogador = this.game.add.text(300, 530, '20', {font: "24px Arial", fill: "#fdb317", align: "center"});
+    this.tirosJogador = this.game.add.text(30, 530, '20', {font: "24px Arial", fill: "#fdb317", align: "center"});
     this.tirosJogador.fixedToCamera = true;
+    
+    this.iconArmaJog = this.game.add.image(68, 512, "ak47IconHud")
+    this.iconArmaJog.scale.setTo(0.3);
+    this.iconArmaJog.fixedToCamera = true;
 };
 
 Calciumtrice.prototype.setAlvoDosInimigos = function (alvo, inimigos) {

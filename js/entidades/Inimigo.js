@@ -1,4 +1,4 @@
-var Inimigo = function (_game, _x, _y, _key, _frame, _layer, _groupIni, _mapaGlobalayer) {
+var Inimigo = function (_game, _x, _y, _key, _frame, _layer, _groupIni, _mapaGlobalayer, _groupCadaver) {
     Phaser.Sprite.call(this, _game, _x, _y, _key, _frame);
     this.layer = _layer;
     this.heroi;
@@ -18,7 +18,13 @@ var Inimigo = function (_game, _x, _y, _key, _frame, _layer, _groupIni, _mapaGlo
     this.shadow;
     this.distancia = 15;
     
+    this.groupCadaver = _groupCadaver;
     this.groupIni = _groupIni;
+    
+    this.podeAndar = true;
+    this.recebeuAtaque = false;
+    
+    this.tempoProximoPasso = 0;
     
     this.criaPathFinder = function (dadosLayerTilemap, listaTilesPermitidos) {
         this.easyStarIni = new EasyStar.js();
@@ -94,6 +100,8 @@ Inimigo.prototype.criaAudio = function () {
         this.somZumbi.addMarker('zumbi22', 17.434, 18.099);
         this.somZumbi.addMarker('zumbi23', 18.099, 18.913);
         this.somZumbi.addMarker('zumbi24', 18.913, 19.244);
+        Inimigo.prototype.somZumbiCaminhaConcreto = this.game.add.audio('somPassoConcreto', 0.5, false, true);
+        this.somZumbiCaminhaConcreto.allowMultiple = true;
     }
 };
 
@@ -107,7 +115,6 @@ Inimigo.prototype.pathFind = function () {
             xHeroi = this.layer.getTileX(this.heroi.position.x),
             yHeroi = this.layer.getTileY(this.heroi.position.y),
             esteInimigo = this;
-
     
     if (Math.abs(xInimigo - xHeroi) > this.distancia || Math.abs(yInimigo - yHeroi) > this.distancia) {
         this.parado = true;
@@ -120,6 +127,7 @@ Inimigo.prototype.pathFind = function () {
         }
         this.easyStarIni.findPath(xInimigo, yInimigo, xHeroi, yHeroi, function (path) {
             esteInimigo.pathFinded(path);
+//            console.log(path);
         });
         this.easyStarIni.calculate();
     }
@@ -142,45 +150,53 @@ Inimigo.prototype.pathFinded = function (path) {
         this.animations.play("NO");
         this.shadow.body.velocity.x = -this.velocidade;
         this.shadow.body.velocity.y = -this.velocidade;
-    } else if (proximoPontoX == atualPontoX && proximoPontoY < atualPontoY) {
+    } 
+    else if (proximoPontoX == atualPontoX && proximoPontoY < atualPontoY) {
         this.direcao = "N";
         this.animations.play("N");
         this.shadow.body.velocity.y = -this.velocidade;
-    } else if (proximoPontoX > atualPontoX && proximoPontoY < atualPontoY) {
+    } 
+    else if (proximoPontoX > atualPontoX && proximoPontoY < atualPontoY) {
         this.direcao = "NL";
         this.animations.play("NL");
         this.shadow.body.velocity.x = this.velocidade;
         this.shadow.body.velocity.y = -this.velocidade;
-    } else if (proximoPontoX < atualPontoX && proximoPontoY == atualPontoY) {
+    } 
+    else if (proximoPontoX < atualPontoX && proximoPontoY == atualPontoY) {
         this.direcao = "O";
         this.animations.play("O");
         this.shadow.body.velocity.x = -this.velocidade;
-    } else if (proximoPontoX > atualPontoX && proximoPontoY == atualPontoY) {
+    } 
+    else if (proximoPontoX > atualPontoX && proximoPontoY == atualPontoY) {
         this.direcao = "L";
         this.animations.play("L");
         this.shadow.body.velocity.x = this.velocidade;
-    } else if (proximoPontoX > atualPontoX && proximoPontoY > atualPontoY) {
+    } 
+    else if (proximoPontoX > atualPontoX && proximoPontoY > atualPontoY) {
         this.direcao = "SL";
         this.animations.play("SL");
         this.shadow.body.velocity.x = this.velocidade;
         this.shadow.body.velocity.y = this.velocidade;
-    } else if (proximoPontoX == atualPontoX && proximoPontoY > atualPontoY) {
+    } 
+    else if (proximoPontoX == atualPontoX && proximoPontoY > atualPontoY) {
         this.direcao = "S";
         this.animations.play("S");
         this.shadow.body.velocity.y = this.velocidade;
-    } else if (proximoPontoX < atualPontoX && proximoPontoY > atualPontoY) {
+    } 
+    else if (proximoPontoX < atualPontoX && proximoPontoY > atualPontoY) {
         this.direcao = "SO";
         this.animations.play("SO");
         this.shadow.body.velocity.x = -this.velocidade;
         this.shadow.body.velocity.y = this.velocidade;
     }
     this.position.setTo(this.shadow.position.x, this.shadow.position.y);
+     
 };
 
 Inimigo.prototype.criaSombra = function () {
     this.shadow = this.game.add.sprite(this.position.x, this.position.y, 'tilesetSpriteSheet', 960);
     this.game.physics.arcade.enable(this.shadow);
-    this.shadow.alpha = 1;
+    this.shadow.alpha = 0.5;
     this.shadow.anchor.setTo(0.5, 1);
 
 //    this.shadow.position.set(100, 100);
@@ -189,14 +205,15 @@ Inimigo.prototype.criaSombra = function () {
 };
 
 Inimigo.prototype.recebeDano = function () {
+    this.recebeuAtaque = true;
     var dano = 20;
     this.vida -= dano;
     this.tint = "#0xFF0000";
     var bloodHit = this.game.add.emitter(0, 0, 50);
     bloodHit.makeParticles("sangue");
     bloodHit.gravity = 200;
-    bloodHit.x = this.x - 10;
-    bloodHit.y = this.y - 32;
+    bloodHit.x = Math.floor(Math.random()* 5) + (this.x - 10);
+    bloodHit.y = Math.floor(Math.random()* 5) + (this.y - 32);
     bloodHit.start(true, 1000, null, 10);
     var numeroRand = Math.floor(Math.random() * 6) + 64;
     var sangueChao = this.game.add.sprite(this.x, this.y, "doom_tileset_spritesheet", numeroRand);
@@ -205,14 +222,15 @@ Inimigo.prototype.recebeDano = function () {
     //nao usar isso sprite.z
     sangueChao.z = 0;
     if (this.vida <= 0) {
-        console.log(this);
+        
         this.somZumbi.destroy();
         this.kill();
         this.groupIni.remove(this);
-        var corpoMorto = this.game.add.sprite(this.position.x, this.position.y, 'corpoMorto', 0);
+        var corpoMorto = this.game.add.sprite(this.position.x, this.position.y, 'corpoMorto', 0, this.groupCadaver);
 //        this.easyStarIni.cancelPath(this.easyStarIni);
     }
-    this.game.time.events.add(150, function(){bloodHit.destroy(); this.tint = "0x00FF00"}, this);
+    this.game.time.events.add(150, function(){bloodHit.destroy(); 
+                                              this.tint = "0x00FF00";}, this);
 //    this.game.time.events.add(2000, function(){sangueChao.destroy();}, this);
     
 };
@@ -224,8 +242,6 @@ Inimigo.prototype.update = function () {
     this.shadow.body.velocity.y = 0;
     if (this.alive) {
         this.pathFind();
-    }else{
-        this.removeAdditionalPointCost(this.shadow.body.x ,this.shadow.body.y);
     }
 };
 
