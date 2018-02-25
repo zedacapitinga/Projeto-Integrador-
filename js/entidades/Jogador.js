@@ -307,31 +307,31 @@ Jogador.prototype.desenhaLuz = function (radianos) {
 
 Jogador.prototype.direcaoJogador = function (_angulo) {
     
-    if (_angulo > 30 && _angulo < 60) {
+    if (_angulo > 30 && _angulo <= 60) {
         //cima direita NE || 
         return 5;
     }
-    if (_angulo > 60 && _angulo < 120) {
+    if (_angulo >= 60 && _angulo <= 120) {
         //cima N
         return 0;
     }
-    if (_angulo >= 120 && _angulo < 150) {
+    if (_angulo >= 120 && _angulo <= 150) {
         //cima esquerda NO
         return 4;
     }
-    if (_angulo > 150 && _angulo < 210) {
+    if (_angulo >= 150 && _angulo <= 210) {
         //esquerda O
         return 3;
     }
-    if (_angulo > 210 && _angulo < 240) {
+    if (_angulo >= 210 && _angulo <= 240) {
         //baixo esquerda SO
         return 6;
     }
-    if (_angulo > 240 && _angulo < 300) {
+    if (_angulo >= 240 && _angulo <= 300) {
         //baixo S
         return 1;
     }
-    if (_angulo > 330 || _angulo < 30) {
+    if (_angulo >= 330 || _angulo <= 30) {
         //direita L || 
         return 2;
     }
