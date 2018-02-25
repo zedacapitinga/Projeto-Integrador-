@@ -11,6 +11,7 @@ Calciumtrice.Boot.prototype = {
     },
     create: function(){
         
+        this.game.canvas.oncontextmenu = function (e) { e.preventDefault(); }
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         
         this.state.start('preload');

@@ -93,13 +93,13 @@ Jogador.prototype.cria = function (_layerOfWall, _groupInimigos) {
 Jogador.prototype.criaAudio = function () {
     this.somJogador = this.game.add.audio('efeitos');
     this.somJogador.allowMultiple = true;
-    this.somJogador.addMarker('tiro', 0, 0.629);
+    this.somJogador.addMarker('tiro', 0, 0.629, 0.2);
     this.somJogador.addMarker('reload', 0.629, 0.970);
     this.somJogador.addMarker('dano', 1.599, 1.182);
     this.somJogador.addMarker('burn', 2.789, 1.652);
     this.somJogador.addMarker('morte', 4.441, 1.152);
     this.somJogador.addMarker('granada', 5.593, 2.110);
-    this.somJogadorCaminhaConcreto = this.game.add.audio('somPassoConcreto', 0.5, false, true);
+    this.somJogadorCaminhaConcreto = this.game.add.audio('somPassoConcreto', 0.2, false, true);
 }
 
 Jogador.prototype.criaTiros = function () {
@@ -177,8 +177,7 @@ Jogador.prototype.update = function () {
     var radianos = Math.atan2(this.y - mouseY, this.x - mouseX);
     this.mira.position.setTo(mouseX, mouseY);
     this.desenhaLuz(radianos);
-    var anguloMoJo = this.anguloMouseJogador(radianos);    
-    console.log(anguloMoJo);
+    var anguloMoJo = this.anguloMouseJogador(radianos);
     var direcao = this.direcaoJogador(anguloMoJo);
     
     this.anguloMouseJogador(radianos);
@@ -338,49 +337,6 @@ Jogador.prototype.direcaoJogador = function (_angulo) {
     //baixao direita SE
     return 7;
 };
-
-//Jogador.prototype.direcaoJogador = function (radianos) {
-//    var angulo = radianos * (180 / Math.PI);
-//    //para virar o 0 para o lado esquerdo
-////    
-//    if (angulo > 0) {    
-//        angulo -= 180;
-//    } 
-//    else {
-//        angulo += 180;
-//    }
-//    if (angulo > -112 && angulo < -67) {
-//        //cima N
-//        return 0;
-//    }
-//    if (angulo > 67 && angulo < 112) {
-//        //baixo S
-//        return 1;
-//    }
-//    if (angulo > -22 && angulo < 22) {
-//        //direita L
-//        return 2;
-//    }
-//    if (angulo > 157 || angulo < -157) {
-//        //esquerda O
-//        return 3;
-//    }
-//    if (angulo > -157 && angulo < -112) {
-//        //cima esquerda NO
-//        return 4;
-//    }
-//    if (angulo > -67 && angulo < -22) {
-//        //cima direita NE
-//        return 5;
-//    }
-//    if (angulo > 112 && angulo < 157) {
-//        //baixo esquerda SO
-//        return 6;
-//    }
-//    //baixao direita SE
-//    return 7;
-//};
-
 
 Jogador.prototype.jogadorGira = function (direcao) {
     switch (direcao) {
