@@ -198,9 +198,6 @@ Inimigo.prototype.criaSombra = function () {
     this.game.physics.arcade.enable(this.shadow);
     this.shadow.alpha = 0.5;
     this.shadow.anchor.setTo(0.5, 1);
-
-//    this.shadow.position.set(100, 100);
-
     this.shadow.position.set(this.x, this.y);
 };
 
@@ -214,7 +211,7 @@ Inimigo.prototype.recebeDano = function () {
     bloodHit.gravity = 200;
     bloodHit.x = Math.floor(Math.random()* 5) + (this.x - 10);
     bloodHit.y = Math.floor(Math.random()* 5) + (this.y - 32);
-    bloodHit.start(true, 1000, null, 10);
+    bloodHit.start(true, 100, true, 10000);
     var numeroRand = Math.floor(Math.random() * 6) + 64;
     var sangueChao = this.game.add.sprite(this.x, this.y, "doom_tileset_spritesheet", numeroRand);
     sangueChao.mask = this.mask;
@@ -226,7 +223,7 @@ Inimigo.prototype.recebeDano = function () {
         this.somZumbi.destroy();
         this.kill();
         this.groupIni.remove(this);
-        var corpoMorto = this.game.add.sprite(this.position.x, this.position.y, 'corpoMorto', 0, this.groupCadaver);
+        var corpoMorto = this.game.add.sprite(this.shadow.position.x - 32, this.shadow.position.y - 32, 'corpoMorto', 0, this.groupCadaver);
 //        this.easyStarIni.cancelPath(this.easyStarIni);
     }
     this.game.time.events.add(150, function(){bloodHit.destroy(); 

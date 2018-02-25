@@ -30,23 +30,6 @@ Calciumtrice.prototype.getFase = function () {
     return window.localStorage.getItem("fase");
 };
 
-//Calciumtrice.prototype.criaInimigos = function (listaInimigos) {
-//    var inimigosDoMapa, inimigo;
-//    this.inimigos = this.game.add.group();
-//    var i, j, maxI, maxJ;
-//    for (i = 0, maxI = listaInimigos.length; i < maxI; i++) {
-//        inimigosDoMapa = this.mapaGlobal.findObjectsByType(listaInimigos[i].nome);
-//        for (j = 0, maxJ = inimigosDoMapa.length; j < maxJ; j++) {
-//            inimigo = new listaInimigos[i].Classe(this.game, inimigosDoMapa[j].x, inimigosDoMapa[j].y, listaInimigos[i].key, 0, this.easystar, this.layerChaoVisivel);
-//            inimigo.cria();
-//            inimigo.outOfBoundsKill = true;
-//            inimigo.checkWorldBounds = true;
-//            this.inimigos.add(inimigo);
-//        }
-//    }
-//    this.inimigos.sort();
-//};
-
 Calciumtrice.prototype.criaInimigo = function(_inimigos,_mapaGlobalLayer){
     var listaInimigos = [{nome: 'spawnInimigoFacil',key: 'heroi',Classe: Fraco},
                          {nome: 'spawnInimigoMedio',key: 'commando',Classe: Commando},

@@ -421,7 +421,11 @@ Jogador.prototype.recebeAtaque = function (_inimigo) {
         return false;
     }
     if (_inimigo.ataque()) {
-        this.somJogador.play('dano');
+        this.danoTela = this.game.add.sprite(0, 0, "danoIndicador");
+        this.danoTela.fixedToCamera = true;
+        this.game.add.tween(this.danoTela).to( { alpha: 0 }, 2000, "Linear", true);
+        
+        this.somJogador.play('dano');        
         this.vida -= _inimigo.dano;
         var bloodHit = this.game.add.emitter(0, 0, 100);
         bloodHit.makeParticles("sangue");
@@ -500,16 +504,16 @@ Jogador.prototype.anguloToPontero = function(displayObject, pointer){
     var dy = pointer.worldY - displayObject.y;
     
     if(dx > 0){
-        dx = dx + Math.floor(Math.random() * 200);
+        dx = dx + Math.floor(Math.random() * 80);
     }
     else{
-        dx = dx - Math.floor(Math.random() * 200);
+        dx = dx - Math.floor(Math.random() * 80);
     }
     if(dy > 0){
-        dy = dy + Math.floor(Math.random() * 200);
+        dy = dy + Math.floor(Math.random() * 80);
     }
     else{
-        dy = dy - Math.floor(Math.random() * 200);
+        dy = dy - Math.floor(Math.random() * 80);
     }
     
     return Math.atan2(dy, dx);

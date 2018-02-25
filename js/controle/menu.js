@@ -6,7 +6,6 @@ Calciumtrice.Menu = function () {
 Calciumtrice.Menu.prototype = {
     create: function () {
         this.game.add.sprite(0, 0, 'fundoMenu');
-//        this.somIcone = this.add.button(700, 500, "somIcone", this.somDoMenu ,this, 0, 0, 0);
         
         this.btNovoJogo = this.add.button(this.game.world.centerX, this.game.world.centerY , 'novojogobt', this.novoJogo, this, 1, 0, 1);
         this.btNovoJogo.anchor.set(0.5);

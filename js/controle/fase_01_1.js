@@ -20,7 +20,6 @@ Fase_01.prototype.create = function () {
     this.layerChao.resizeWorld();
     this.mapaGlobal.setCollisionBetween(1, 1000, true, 'paredes');
     
-    
 //    this.saida = this.mapaGlobal.createFromObject('objetos', 163, 'doom_porta');
 //    this.game.physics.arcade.enable(this.saida);
 //    this.saida.enableBody = true;
@@ -36,9 +35,7 @@ Fase_01.prototype.create = function () {
     this.criaHud();
     this.setAlvoDosInimigos(this.jogador.shadow, this.inimigos);    
     this.aplicaMascara(this.jogador.luz, [this.layerChao, this.inimigos]);
-    this.jogador.setHud(this.tirosJogador, this.vidaJogador);    
-    
-    
+    this.jogador.setHud(this.tirosJogador, this.vidaJogador);
     
     this.hudTemp = this.game.add.text(30, 100, this.inimigos.length + "oi", 
                                       {font: "24px Arial", fill: "#e82d00", align: "center"});
@@ -69,10 +66,13 @@ Fase_01.prototype.update = function () {
 	
     //-----------------------------------
     if(this.inputPauseGame.isDown){
+        
+           this.funcaoPausar(); 
         if(this.game.paused){
-            this.game.paused = false;
-        }else{
-            this.game.paused = true;
+            
+            this.btNovoJogo = this.game.add.button(this.game.world.centerX, this.game.world.centerY , 'novojogobt', 
+                                          this.desPausar, this, 1, 0, 1);
+            this.btNovoJogo.anchor.set(0.5);
         }
         
     }
@@ -81,6 +81,18 @@ Fase_01.prototype.update = function () {
         this.setAlvoDosInimigos(this.jogador.shadow, this.inimigos);
         this.aplicaMascara(this.jogador.luz, [this.layerChao, this.inimigos]);
     }
+};
+
+Fase_01.prototype.funcaoPausar = function(){
+    
+    this.btNovoJogo = this.game.add.button(this.game.world.centerX, this.game.world.centerY , 'novojogobt', 
+                                      this.desPausar, this, 1, 0, 1);
+    this.btNovoJogo.anchor.set(0.5);
+    this.game.paused = true;
+};
+Fase_01.prototype.desPausar = function(){
+    this.btNovoJogo.destroy();
+    this.game.paused = false;
 };
 
 Fase_01.prototype.render = function () {
