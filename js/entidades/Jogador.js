@@ -308,18 +308,18 @@ Jogador.prototype.desenhaLuz = function (radianos) {
 Jogador.prototype.direcaoJogador = function (_angulo) {
     
     if (_angulo > 30 && _angulo < 60) {
-        //cima direita NE
+        //cima direita NE || 
         return 5;
     }
     if (_angulo > 60 && _angulo < 120) {
         //cima N
         return 0;
     }
-    if (_angulo > 120 && _angulo < 150) {
+    if (_angulo >= 120 && _angulo < 150) {
         //cima esquerda NO
         return 4;
     }
-    if (_angulo >= 150 && _angulo <= 210) {
+    if (_angulo > 150 && _angulo < 210) {
         //esquerda O
         return 3;
     }
@@ -332,7 +332,7 @@ Jogador.prototype.direcaoJogador = function (_angulo) {
         return 1;
     }
     if (_angulo > 330 || _angulo < 30) {
-        //direita L
+        //direita L || 
         return 2;
     }
     //baixao direita SE
@@ -393,7 +393,8 @@ Jogador.prototype.jogadorGira = function (direcao) {
         case 2:
             this.frame = 35;
             break;
-        case this.direcoes[3]:
+//        case this.direcoes[3]:
+        case 3:
             this.frame = 44;
             break;
         case 4:
