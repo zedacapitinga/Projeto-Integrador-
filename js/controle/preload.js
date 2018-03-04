@@ -29,6 +29,7 @@ Calciumtrice.Preload.prototype ={
         
         this.load.tilemap('mapaVariosInimigos', 'assets/tilemap/mapaTeste01.json', null, Phaser.Tilemap.TILED_JSON);
 
+        this.load.spritesheet('capsula', 'assets/sprites/projetil3.png', 2, 5);
         this.load.spritesheet('projetil2', 'assets/sprites/projetil2.png', 14, 12);
         this.load.image('projetil', 'assets/sprites/projetil.png');
         this.load.spritesheet('heroi', 'assets/sprites/char.png', 55.5, 64.8);

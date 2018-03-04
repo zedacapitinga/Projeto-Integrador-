@@ -30,10 +30,11 @@ Calciumtrice.prototype.getFase = function () {
     return window.localStorage.getItem("fase");
 };
 
-Calciumtrice.prototype.criaInimigo = function(_inimigos,_mapaGlobalLayer){
+Calciumtrice.prototype.criaInimigo = function(_inimigos,_mapaGlobalLayer, _grupoInimigoCorpo){
     var listaInimigos = [{nome: 'spawnInimigoFacil',key: 'heroi',Classe: Fraco},
                          {nome: 'spawnInimigoMedio',key: 'commando',Classe: Commando},
                          {nome: 'spawnInimigoDificil',key: 'hellKnight',Classe: HellKnight}];
+    
     var inimigosDoMapa, inimigo;
     var inimigos = _inimigos;
     var i, j, maxI, maxJ;

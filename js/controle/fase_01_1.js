@@ -25,18 +25,14 @@ Fase_01.prototype.create = function () {
 //    this.saida.enableBody = true;
     
     this.inimigos = this.game.add.group();
-    this.cadaveresInimigos = this.game.add.group();
-    this.criaInimigo(this.inimigos, this.mapaGlobal.layer.data, this.cadaveresInimigos);   
+    this.criaInimigo(this.inimigos, this.mapaGlobal.layer.data);   
     
-    this.listaJogadores = this.game.add.group();
     this.jogador = this.mapaGlobal.createFromObject('objetos', 9, 'heroi', 0, true, true, Jogador);
     this.jogador.cria(this.layerParede, this.inimigos);
-    this.listaJogadores.add(this.jogador);
     this.criaHud();
     this.setAlvoDosInimigos(this.jogador.shadow, this.inimigos);    
     this.aplicaMascara(this.jogador.luz, [this.layerChao, this.inimigos]);
     this.jogador.setHud(this.tirosJogador, this.vidaJogador);
-    
     this.hudTemp = this.game.add.text(30, 100, this.inimigos.length + "oi", 
                                       {font: "24px Arial", fill: "#e82d00", align: "center"});
     this.hudTemp.fixedToCamera = true;
@@ -44,14 +40,13 @@ Fase_01.prototype.create = function () {
     Calciumtrice.game.input.mouse.capture = true;
 };
 
-Fase_01.prototype.passaFase = function () {
-    this.game.state.start('fase_02');
-};
-
 Fase_01.prototype.update = function () {
     if (this.jogador.vida < 1) {
         this.fimDeJogo(this.tempoJogadorVivo);
     }
+    
+    
+    this.game.world.bringToTop(this.jogador);
     
     this.hud.frame = this.jogador.numTiros;
     this.hudTemp.setText(this.inimigos.length);
@@ -67,13 +62,18 @@ Fase_01.prototype.update = function () {
     //-----------------------------------
     if(this.inputPauseGame.isDown){
         
-           this.funcaoPausar(); 
-        if(this.game.paused){
-            
-            this.btNovoJogo = this.game.add.button(this.game.world.centerX, this.game.world.centerY , 'novojogobt', 
-                                          this.desPausar, this, 1, 0, 1);
-            this.btNovoJogo.anchor.set(0.5);
-        }
+        this.btNovoJogo = this.game.add.button(this.jogador.x, this.jogador.y, 'novojogobt', 
+                                      this.desPausar, this, 1, 0, 1);
+//        this.btNovoJogo.anchor.set(0.5);
+//        this.btNovoJogo.fixedToCamera = true;
+        this.game.paused = true;
+//        if(this.game.paused){
+//            
+//            this.btNovoJogo = this.game.add.button(this.game.world.centerX, this.game.world.centerY , 'novojogobt', 
+//                                          this.desPausar, this, 1, 0, 1);
+//            this.btNovoJogo.anchor.set(0.5);
+//        }
+        
         
     }
     if(this.inimigos.length == 0){
@@ -81,15 +81,16 @@ Fase_01.prototype.update = function () {
         this.setAlvoDosInimigos(this.jogador.shadow, this.inimigos);
         this.aplicaMascara(this.jogador.luz, [this.layerChao, this.inimigos]);
     }
+    
+    
 };
 
 Fase_01.prototype.funcaoPausar = function(){
     
-    this.btNovoJogo = this.game.add.button(this.game.world.centerX, this.game.world.centerY , 'novojogobt', 
-                                      this.desPausar, this, 1, 0, 1);
-    this.btNovoJogo.anchor.set(0.5);
-    this.game.paused = true;
+    
+    
 };
+
 Fase_01.prototype.desPausar = function(){
     this.btNovoJogo.destroy();
     this.game.paused = false;
@@ -98,6 +99,10 @@ Fase_01.prototype.desPausar = function(){
 Fase_01.prototype.render = function () {
     Calciumtrice.game.debug.text(Calciumtrice.game.time.fps || '--', 2, 14, "#ff0000");
     
+};
+
+Fase_01.prototype.passaFase = function () {
+    this.game.state.start('fase_02');
 };
 
 //Fase_01.prototype.criaLayersTelhados = function () {

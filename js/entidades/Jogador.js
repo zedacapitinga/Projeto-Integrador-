@@ -82,6 +82,7 @@ Jogador.prototype.cria = function (_layerOfWall, _groupInimigos) {
     }
 
     this.criaTiros();    
+    this.criaCapsulaChao();    
     this.mira = this.game.add.sprite(0, 0, 'mira');
     this.mira.anchor.setTo(0.5);
     this.camSpriteTeste = this.game.add.sprite(0, 0, 'mira');
@@ -116,6 +117,11 @@ Jogador.prototype.criaTiros = function () {
             this.frame = 1;
         };
     }, this);
+};
+
+Jogador.prototype.criaCapsulaChao = function(){
+    this.capsulasNoChao = this.game.add.group();
+    this.capsulasNoChao.createMultiple(999, "capsula", 0, false);
 };
 
 Jogador.prototype.criaAnimacoes = function () {
@@ -171,7 +177,7 @@ Jogador.prototype.update = function () {
     this.shadow.body.velocity.x = 0;
     
     this.mouseXCamTeste = (this.mouseJogador.worldX + this.shadow.x) /2;
-    this.mouseYCamTeste = (this.mouseJogador.worldY + this.shadow.y) /2;    
+    this.mouseYCamTeste = (this.mouseJogador.worldY + this.shadow.y) /2 ;    
     this.camSpriteTeste.x = this.mouseXCamTeste;
     this.camSpriteTeste.y = this.mouseYCamTeste;
     var radianos = Math.atan2(this.y - mouseY, this.x - mouseX);
@@ -192,15 +198,25 @@ Jogador.prototype.update = function () {
         this.jogadorGira(direcao);
     }
     this.position.setTo(this.shadow.position.x, this.shadow.position.y);
-
-    this.tiros.forEach(function (_bala) {
+    
+    if(this.tiros.getFirstAlive()){
+        var _bala = this.tiros.getFirstAlive();
         _self.game.physics.arcade.collide(_bala, _self.groupInimigos, function (_Bala, _inimigo) {
             _self.mataBala(_Bala, _inimigo);
         });
         _self.game.physics.arcade.collide(_bala, _self.wallLayers, function (_Bala, parede) {
             _self.mataBalaParede(_Bala, parede);
         });
-    }, this);
+    };
+    
+//    this.tiros.forEach(function (_bala) {
+//        _self.game.physics.arcade.collide(_bala, _self.groupInimigos, function (_Bala, _inimigo) {
+//            _self.mataBala(_Bala, _inimigo);
+//        });
+//        _self.game.physics.arcade.collide(_bala, _self.wallLayers, function (_Bala, parede) {
+//            _self.mataBalaParede(_Bala, parede);
+//        });
+//    }, this);
 
     this.game.physics.arcade.overlap(this.shadow, this.groupInimigos, function (_sombra, _inimigo) {
         _self.recebeAtaque(_inimigo);
@@ -236,8 +252,9 @@ Jogador.prototype.atira = function () {
         this.numTiros--;        
         this.tempoProximoTiro = this.game.time.now + this.frequenciaTiro;
         var tiro = this.tiros.getFirstExists(false);
-            tiro.reset(this.position.x, this.position.y - this.height / 2);
-        
+        tiro.reset(this.position.x, this.position.y - this.height / 2);
+        var capsulaChao = this.capsulasNoChao.getFirstExists(false);
+        capsulaChao.reset(this.position.x, this.position.y - this.height / 2);    
 //        console.log(this.tempoUltimoTiro - this.tempoProximoTiro);
         
         if((this.tempoProximoTiro - this.tempoUltimoTiro) < 500  ){
@@ -257,7 +274,20 @@ Jogador.prototype.atira = function () {
             tiro.animations.play("inicioTiro", 45);
             this.tempoUltimoTiro = this.game.time.now;
         }
+        var capsulaTween = this.game.add.tween(capsulaChao).to( { angle:1080, 
+                                                                 x : this.position.x + 50, 
+                                                                 y: this.position.y + 10}, 1000, "Linear"
+                                                               ,true).onComplete.add(function() {  
+                                                            this.game.time.events.add(10, function() { this.animaCapsula(capsulaChao) }, this);}, this);
+;
+        
     }
+};
+
+Jogador.prototype.animaCapsula = function(_sprite){
+        var aleN = Math.floor(Math.random()* 180);
+    var animacao = this.game.add.tween(_sprite).to( { angle:aleN}, 400, "Linear", true);
+    return;
 };
 
 Jogador.prototype.desenhaLuz = function (radianos) {
@@ -424,7 +454,7 @@ Jogador.prototype.recebeAtaque = function (_inimigo) {
         this.danoTela = this.game.add.sprite(0, 0, "danoIndicador");
         this.danoTela.fixedToCamera = true;
         this.game.add.tween(this.danoTela).to( { alpha: 0 }, 2000, "Linear", true);
-        
+        this.velocidade = 25;
         this.somJogador.play('dano');        
         this.vida -= _inimigo.dano;
         var bloodHit = this.game.add.emitter(0, 0, 100);
@@ -437,6 +467,7 @@ Jogador.prototype.recebeAtaque = function (_inimigo) {
         var sangueChao = this.game.add.sprite(this.shadow.x - 10, this.shadow.y - 20, "doom_tileset_spritesheet", numeroRand);
         sangueChao.mask = this.mask;
         this.game.time.events.add(2000, function(){bloodHit.destroy();}, this);
+        this.game.time.events.add(2000, function(){this.velocidade = 50;}, this);
     }
     return true;
 };

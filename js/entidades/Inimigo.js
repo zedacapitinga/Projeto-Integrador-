@@ -1,4 +1,4 @@
-var Inimigo = function (_game, _x, _y, _key, _frame, _layer, _groupIni, _mapaGlobalayer, _groupCadaver) {
+var Inimigo = function (_game, _x, _y, _key, _frame, _layer, _groupIni, _mapaGlobalayer) {
     Phaser.Sprite.call(this, _game, _x, _y, _key, _frame);
     this.layer = _layer;
     this.heroi;
@@ -18,7 +18,6 @@ var Inimigo = function (_game, _x, _y, _key, _frame, _layer, _groupIni, _mapaGlo
     this.shadow;
     this.distancia = 15;
     
-    this.groupCadaver = _groupCadaver;
     this.groupIni = _groupIni;
     
     this.podeAndar = true;
@@ -223,7 +222,7 @@ Inimigo.prototype.recebeDano = function () {
         this.somZumbi.destroy();
         this.kill();
         this.groupIni.remove(this);
-        var corpoMorto = this.game.add.sprite(this.shadow.position.x - 32, this.shadow.position.y - 32, 'corpoMorto', 0, this.groupCadaver);
+        this.game.add.sprite(this.shadow.position.x - 32, this.shadow.position.y - 32, 'corpoMorto', 0, this.groupCadaver);
 //        this.easyStarIni.cancelPath(this.easyStarIni);
     }
     this.game.time.events.add(150, function(){bloodHit.destroy(); 
