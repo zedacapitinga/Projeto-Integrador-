@@ -19,6 +19,7 @@ var Medio = function (_game, _x, _y, _key, _frame, _easyStar, _layer) {
     this.tint = 0x0000FF;
     this.distancia = 7;
     this.velocidadeAtaque = 2;
+    this.tint = "0xff0031";
 };
 
 Medio.prototype = Object.create(Inimigo.prototype);

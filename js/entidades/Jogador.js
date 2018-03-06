@@ -176,10 +176,10 @@ Jogador.prototype.update = function () {
     this.shadow.body.velocity.y = 0;
     this.shadow.body.velocity.x = 0;
     
-    this.mouseXCamTeste = (this.mouseJogador.worldX + this.shadow.x) /2;
-    this.mouseYCamTeste = (this.mouseJogador.worldY + this.shadow.y) /2 ;    
-    this.camSpriteTeste.x = this.mouseXCamTeste;
-    this.camSpriteTeste.y = this.mouseYCamTeste;
+    this.distanciaCamMouseX = (this.mouseJogador.worldX + this.shadow.x) /2;
+    this.distanciaCamMouseY = (this.mouseJogador.worldY + this.shadow.y) /2 ;    
+    this.camSpriteTeste.x = this.distanciaCamMouseX;
+    this.camSpriteTeste.y = this.distanciaCamMouseY;
     var radianos = Math.atan2(this.y - mouseY, this.x - mouseX);
     this.mira.position.setTo(mouseX, mouseY);
     this.desenhaLuz(radianos);
@@ -197,17 +197,17 @@ Jogador.prototype.update = function () {
     } else {
         this.jogadorGira(direcao);
     }
-    this.position.setTo(this.shadow.position.x, this.shadow.position.y);
     
     if(this.tiros.getFirstAlive()){
         var _bala = this.tiros.getFirstAlive();
         _self.game.physics.arcade.collide(_bala, _self.groupInimigos, function (_Bala, _inimigo) {
             _self.mataBala(_Bala, _inimigo);
-        });
+        }  );                                       
         _self.game.physics.arcade.collide(_bala, _self.wallLayers, function (_Bala, parede) {
             _self.mataBalaParede(_Bala, parede);
         });
     };
+    
     
 //    this.tiros.forEach(function (_bala) {
 //        _self.game.physics.arcade.collide(_bala, _self.groupInimigos, function (_Bala, _inimigo) {
@@ -217,7 +217,6 @@ Jogador.prototype.update = function () {
 //            _self.mataBalaParede(_Bala, parede);
 //        });
 //    }, this);
-
     this.game.physics.arcade.overlap(this.shadow, this.groupInimigos, function (_sombra, _inimigo) {
         _self.recebeAtaque(_inimigo);
     });
@@ -437,6 +436,7 @@ Jogador.prototype.jogadorAnda = function (direcao) {
     this.animations.play(animacao);
     
     
+    this.position.setTo(this.shadow.position.x, this.shadow.position.y);
     
     if (this.game.time.now > this.tempoProximoPasso) {
         this.somJogadorCaminhaConcreto.play();

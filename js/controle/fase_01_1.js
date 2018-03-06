@@ -14,9 +14,12 @@ Fase_01.prototype.create = function () {
     this.mapaGlobal.checkWorldBounds = true;
     this.mapaGlobal.addTilesetImage('grassland', 'grassLandTileset');
     this.layerChao = this.mapaGlobal.createLayer('chao');
+    this.layerChao.renderSettings.enableScrollDelta = false;
     this.layerChaoVisivel = this.mapaGlobal.createLayer('chao');
+    this.layerChaoVisivel.renderSettings.enableScrollDelta = false;
     this.layerChaoVisivel.alpha = 0.8;
     this.layerParede = this.mapaGlobal.createLayer('paredes');
+    this.layerParede.renderSettings.enableScrollDelta = false;
     this.layerChao.resizeWorld();
     this.mapaGlobal.setCollisionBetween(1, 1000, true, 'paredes');
     
@@ -30,52 +33,41 @@ Fase_01.prototype.create = function () {
     this.jogador = this.mapaGlobal.createFromObject('objetos', 9, 'heroi', 0, true, true, Jogador);
     this.jogador.cria(this.layerParede, this.inimigos);
     this.criaHud();
-    this.setAlvoDosInimigos(this.jogador.shadow, this.inimigos);    
+    this.setAlvoDosInimigos(this.jogador.shadow, this.inimigos);
+    this.jogador.setHud(this.tirosJogador, this.vidaJogador); 
+    this.inimigos.create(this.jogador.position.x,this.jogador.position.y,"heroi");
     this.aplicaMascara(this.jogador.luz, [this.layerChao, this.inimigos]);
-    this.jogador.setHud(this.tirosJogador, this.vidaJogador);
+//    this.listaArray = this.inimigos.iterate("tipo", "ini", Phaser.Group.RETURN_TOTAL);
+    this.listaArray = this.inimigos.iterate("tipo", "ini", Phaser.Group.RETURN_CHILD);
+    console.log(this.listaArray);
+    console.log(this.inimigos.length);
     this.hudTemp = this.game.add.text(30, 100, this.inimigos.length + "oi", 
                                       {font: "24px Arial", fill: "#e82d00", align: "center"});
     this.hudTemp.fixedToCamera = true;
-    this.inputPauseGame = this.game.input.keyboard.addKey(Phaser.Keyboard.P);
     Calciumtrice.game.input.mouse.capture = true;
 };
 
 Fase_01.prototype.update = function () {
     if (this.jogador.vida < 1) {
         this.fimDeJogo(this.tempoJogadorVivo);
-    }
+    };
     
     
-    this.game.world.bringToTop(this.jogador);
+//    this.game.world.bringToTop(this.jogador);
     
     this.hud.frame = this.jogador.numTiros;
     this.hudTemp.setText(this.inimigos.length);
 //    this.hudTemp.setText(this.game.time.now);
     
     this.game.physics.arcade.collide(this.jogador.shadow, this.layerParede);
-    this.game.physics.arcade.collide(this.inimigos.shadow, this.layerParede);
+//    this.game.physics.arcade.collide(this.inimigos.shadow, this.layerParede);
     this.game.physics.arcade.collide(this.jogador.shadow, this.inimigos.shadow);
 //    this.game.physics.arcade.collide(this.jogador.shadow, this.saida, this.passaFase, null, this);
 
     this.inimigos.sort('y', Phaser.Group.SORT_ASCENDING);
 	
     //-----------------------------------
-    if(this.inputPauseGame.isDown){
-        
-        this.btNovoJogo = this.game.add.button(this.jogador.x, this.jogador.y, 'novojogobt', 
-                                      this.desPausar, this, 1, 0, 1);
-//        this.btNovoJogo.anchor.set(0.5);
-//        this.btNovoJogo.fixedToCamera = true;
-        this.game.paused = true;
-//        if(this.game.paused){
-//            
-//            this.btNovoJogo = this.game.add.button(this.game.world.centerX, this.game.world.centerY , 'novojogobt', 
-//                                          this.desPausar, this, 1, 0, 1);
-//            this.btNovoJogo.anchor.set(0.5);
-//        }
-        
-        
-    }
+    
     if(this.inimigos.length == 0){
         this.criaInimigo(this.inimigos, this.mapaGlobal.layer.data);
         this.setAlvoDosInimigos(this.jogador.shadow, this.inimigos);
@@ -83,17 +75,6 @@ Fase_01.prototype.update = function () {
     }
     
     
-};
-
-Fase_01.prototype.funcaoPausar = function(){
-    
-    
-    
-};
-
-Fase_01.prototype.desPausar = function(){
-    this.btNovoJogo.destroy();
-    this.game.paused = false;
 };
 
 Fase_01.prototype.render = function () {

@@ -14,7 +14,7 @@ var Inimigo = function (_game, _x, _y, _key, _frame, _layer, _groupIni, _mapaGlo
     this.velocidadeAtaque = 1;
     this.modoAtacando = true;
     this.tocando = true;
-
+    this.tipo = "ini";
     this.shadow;
     this.distancia = 15;
     

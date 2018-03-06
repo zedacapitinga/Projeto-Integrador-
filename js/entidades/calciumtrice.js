@@ -32,7 +32,7 @@ Calciumtrice.prototype.getFase = function () {
 
 Calciumtrice.prototype.criaInimigo = function(_inimigos,_mapaGlobalLayer, _grupoInimigoCorpo){
     var listaInimigos = [{nome: 'spawnInimigoFacil',key: 'heroi',Classe: Fraco},
-                         {nome: 'spawnInimigoMedio',key: 'commando',Classe: Commando},
+                         {nome: 'spawnInimigoMedio',key: 'heroi',Classe: Commando},
                          {nome: 'spawnInimigoDificil',key: 'hellKnight',Classe: HellKnight}];
     
     var inimigosDoMapa, inimigo;
