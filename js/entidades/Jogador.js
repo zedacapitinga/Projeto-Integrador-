@@ -89,6 +89,8 @@ Jogador.prototype.cria = function (_layerOfWall, _groupInimigos) {
     this.camSpriteTeste.anchor.setTo(0.5);
     this.camSpriteTeste.alpha = 0;
     this.game.camera.follow(this.camSpriteTeste);
+	
+	this.position.setTo(this.shadow.position.x, this.shadow.position.y);
 };
 
 Jogador.prototype.criaAudio = function () {
@@ -183,10 +185,8 @@ Jogador.prototype.update = function () {
     var radianos = Math.atan2(this.y - mouseY, this.x - mouseX);
     this.mira.position.setTo(mouseX, mouseY);
     this.desenhaLuz(radianos);
-    var anguloMoJo = this.anguloMouseJogador(radianos);
-    var direcao = this.direcaoJogador(anguloMoJo);
+    var direcao = this.anguloMouseJogador(radianos);
     
-    this.anguloMouseJogador(radianos);
     if (this.tecla_Recarrega.isDown && !this.carregando && this.numTiros != 20) {
         this.recarrega();
     } else if (this.mouseJogador.isDown) {
@@ -207,23 +207,12 @@ Jogador.prototype.update = function () {
             _self.mataBalaParede(_Bala, parede);
         });
     };
-    
-    
-//    this.tiros.forEach(function (_bala) {
-//        _self.game.physics.arcade.collide(_bala, _self.groupInimigos, function (_Bala, _inimigo) {
-//            _self.mataBala(_Bala, _inimigo);
-//        });
-//        _self.game.physics.arcade.collide(_bala, _self.wallLayers, function (_Bala, parede) {
-//            _self.mataBalaParede(_Bala, parede);
-//        });
-//    }, this);
+
     this.game.physics.arcade.overlap(this.shadow, this.groupInimigos, function (_sombra, _inimigo) {
         _self.recebeAtaque(_inimigo);
     });
     this.pontoX = this.x - this.mouseJogador.worldX;
-    this.pontoY = this.y - this.mouseJogador.worldY;
-    this.hudTiro.setText(this.numTiros);
-    this.hudVida.setText(this.vida + "/100");   
+    this.pontoY = this.y - this.mouseJogador.worldY;   
     
 };
 
@@ -273,18 +262,18 @@ Jogador.prototype.atira = function () {
             tiro.animations.play("inicioTiro", 45);
             this.tempoUltimoTiro = this.game.time.now;
         }
-        var capsulaTween = this.game.add.tween(capsulaChao).to( { angle:1080, 
-                                                                 x : this.position.x + 50, 
-                                                                 y: this.position.y + 10}, 1000, "Linear"
-                                                               ,true).onComplete.add(function() {  
-                                                            this.game.time.events.add(10, function() { this.animaCapsula(capsulaChao) }, this);}, this);
-;
         
+        var capsulaTween = this.game.add.tween(capsulaChao).to( { 
+            angle:1080, 
+            x : this.position.x + 50, 
+            y: this.position.y + 10}, 1000, "Linear" ,true).onComplete.add(function() {  
+                                                            this.game.time.events.add(10, function() { this.animaCapsula(capsulaChao) }, this);}, this);
+        this.hudTiro.setText(this.numTiros);
     }
 };
 
 Jogador.prototype.animaCapsula = function(_sprite){
-        var aleN = Math.floor(Math.random()* 180);
+    var aleN = Math.floor(Math.random()* 180);
     var animacao = this.game.add.tween(_sprite).to( { angle:aleN}, 400, "Linear", true);
     return;
 };
@@ -333,40 +322,6 @@ Jogador.prototype.desenhaLuz = function (radianos) {
     this.luz.endFill();
 };
 
-Jogador.prototype.direcaoJogador = function (_angulo) {
-    
-    if (_angulo > 30 && _angulo <= 60) {
-        //cima direita NE || 
-        return 5;
-    }
-    if (_angulo >= 60 && _angulo <= 120) {
-        //cima N
-        return 0;
-    }
-    if (_angulo >= 120 && _angulo <= 150) {
-        //cima esquerda NO
-        return 4;
-    }
-    if (_angulo >= 150 && _angulo <= 210) {
-        //esquerda O
-        return 3;
-    }
-    if (_angulo >= 210 && _angulo <= 240) {
-        //baixo esquerda SO
-        return 6;
-    }
-    if (_angulo >= 240 && _angulo <= 300) {
-        //baixo S
-        return 1;
-    }
-    if (_angulo >= 330 || _angulo <= 30) {
-        //direita L || 
-        return 2;
-    }
-    //baixao direita SE
-    return 7;
-};
-
 Jogador.prototype.jogadorGira = function (direcao) {
     switch (direcao) {
         case 0:
@@ -378,7 +333,6 @@ Jogador.prototype.jogadorGira = function (direcao) {
         case 2:
             this.frame = 35;
             break;
-//        case this.direcoes[3]:
         case 3:
             this.frame = 44;
             break;
@@ -469,6 +423,8 @@ Jogador.prototype.recebeAtaque = function (_inimigo) {
         this.game.time.events.add(2000, function(){bloodHit.destroy();}, this);
         this.game.time.events.add(2000, function(){this.velocidade = 50;}, this);
     }
+    
+    this.hudVida.setText(this.vida + "/100");
     return true;
 };
 
@@ -502,7 +458,41 @@ Jogador.prototype.anguloMouseJogador = function(_radianos){
     else {
         angulo += 180 - 360;
     }
-    return Math.abs(angulo.toFixed(0));
+    
+    angulo = Math.abs(angulo.toFixed(0));
+    
+    if (angulo > 30 && angulo <= 60) {
+        //cima direita NE || 
+        return 5;
+    }
+    else if (angulo >= 60 && angulo <= 120) {
+        //cima N
+        return 0;
+    }
+   else if (angulo >= 120 && angulo <= 150) {
+        //cima esquerda NO
+        return 4;
+    }
+    else if (angulo >= 150 && angulo <= 210) {
+        //esquerda O
+        return 3;
+    }
+    else if (angulo >= 210 && angulo <= 240) {
+        //baixo esquerda SO
+        return 6;
+    }
+    else if (angulo >= 240 && angulo <= 300) {
+        //baixo S
+        return 1;
+    }
+    else if (angulo >= 330 || angulo <= 30) {
+        //direita L || 
+        return 2;
+    }else { 
+        //baixao direita SE
+        return 7;
+    
+    }
 };
 
 Jogador.prototype.moveToPontero = function(displayObject, speed, pointer, maxTime){

@@ -35,12 +35,12 @@ Fase_01.prototype.create = function () {
     this.criaHud();
     this.setAlvoDosInimigos(this.jogador.shadow, this.inimigos);
     this.jogador.setHud(this.tirosJogador, this.vidaJogador); 
-    this.inimigos.create(this.jogador.position.x,this.jogador.position.y,"heroi");
+//    this.inimigos.create(this.jogador.position.x,this.jogador.position.y,"heroi");
     this.aplicaMascara(this.jogador.luz, [this.layerChao, this.inimigos]);
 //    this.listaArray = this.inimigos.iterate("tipo", "ini", Phaser.Group.RETURN_TOTAL);
     this.listaArray = this.inimigos.iterate("tipo", "ini", Phaser.Group.RETURN_CHILD);
     console.log(this.listaArray);
-    console.log(this.inimigos.length);
+//    console.log(this.inimigos.length);
     this.hudTemp = this.game.add.text(30, 100, this.inimigos.length + "oi", 
                                       {font: "24px Arial", fill: "#e82d00", align: "center"});
     this.hudTemp.fixedToCamera = true;
