@@ -15,7 +15,8 @@ Calciumtrice.Preload.prototype ={
         this.load.image('faleceu', 'assets/sprites/fundo-game-over.png');
         this.load.image('fundoMenu', 'assets/sprites/fundo.png');
         
-        this.load.spritesheet('doom_tileset_spritesheet', 'assets/Tileset/doom_tileset_img.png', 32, 32);
+//        this.load.spritesheet('doom_tileset_spritesheet', 'assets/Tileset/doom_tileset_img.png', 32, 32);
+        this.load.spritesheet('doom_tileset_spritesheet', 'assets/Tileset/doom_tileset_img2.png', 32, 32);
         this.load.image('grassLandTileset', 'assets/tileset/grassland.png');
         this.load.image('porta', 'assets/sprites/porta.png');
         this.load.image('zero', 'assets/sprites/zero.png');

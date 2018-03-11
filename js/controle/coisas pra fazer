@@ -12,7 +12,7 @@ v Hit Animation (let the player know that they’re doing x properly)
 v Permanence (don’t let things simply disappear, also show progress from doing x) - corpos ficarem no mapa
  Camera Lerp (câmeras mais suaves são menos irritantes e fazem com que o personagem se sinta mais em movimento)
 v Camera Position (make your camera setup focus on and enhance the experience of x) mouse e cam
- Screen Shake (just do it, it’s fun & dynamic & easy)
+v Screen Shake (just do it, it’s fun & dynamic & easy)
  Player Knockback [I think he means player recoil] (make the player experience x by how it affects their character & gameplay, also give players a reason to not always do x - because that’s why the player does it instead of it being automatic)
  Sleep (add micro pauses to convey the drama of doing x well)  - pause menu
  Gun Delay (make the character and its props look like they have weight/momentum when moving)
