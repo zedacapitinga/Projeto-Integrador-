@@ -245,6 +245,7 @@ Jogador.prototype.atira = function () {
         capsulaChao.reset(this.position.x, this.position.y - this.height / 2);    
 //        console.log(this.tempoUltimoTiro - this.tempoProximoTiro);
         
+        this.game.camera.shake(0.005, 100);
         if((this.tempoProximoTiro - this.tempoUltimoTiro) < 500  ){
 //        console.log("rajada");
             //mecher no worldX do mouse pra ficar no modo rajada

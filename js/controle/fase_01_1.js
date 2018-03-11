@@ -38,7 +38,8 @@ Fase_01.prototype.create = function () {
 //    this.inimigos.create(this.jogador.position.x,this.jogador.position.y,"heroi");
     this.aplicaMascara(this.jogador.luz, [this.layerChao, this.inimigos]);
 //    this.listaArray = this.inimigos.iterate("tipo", "ini", Phaser.Group.RETURN_TOTAL);
-    this.listaArray = this.inimigos.iterate("tipo", "ini", Phaser.Group.RETURN_CHILD);
+    //nessa função eu rodo o grupo pertuntando pelo tipo e quando ele acha eu mando o callback
+//    this.listaArray = this.inimigos.iterate("tipo", "ini", null, callbackfunction);
     console.log(this.listaArray);
 //    console.log(this.inimigos.length);
     this.hudTemp = this.game.add.text(30, 100, this.inimigos.length + "oi", 
