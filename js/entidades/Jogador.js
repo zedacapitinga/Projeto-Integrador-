@@ -50,7 +50,7 @@ Jogador.prototype.constructor = Jogador;
 
 Jogador.prototype.velocidade = 50;
 //vai mudar para Arma
-Jogador.prototype.velocidadeTiro = 2000;
+Jogador.prototype.velocidadeTiro = 5000;
 Jogador.prototype.frequenciaTiro = 200;
 Jogador.prototype.maxTiros = 50;
 Jogador.prototype.tempoRecarregamentoArma = 1;
@@ -210,9 +210,7 @@ Jogador.prototype.update = function () {
 
     this.game.physics.arcade.overlap(this.shadow, this.groupInimigos, function (_sombra, _inimigo) {
         _self.recebeAtaque(_inimigo);
-    });
-    this.pontoX = this.x - this.mouseJogador.worldX;
-    this.pontoY = this.y - this.mouseJogador.worldY;   
+    });  
     
 };
 
@@ -254,13 +252,13 @@ Jogador.prototype.atira = function () {
 //            mousePrecisao.worldY = mousePrecisao.worldY + Math.floor(Math.random() * 5);
             tiro.rotation = this.moveToPontero(tiro, this.velocidadeTiro, mousePrecisao);
 //            tiro.rotation = this.game.physics.arcade.moveToPointer(tiro, this.velocidadeTiro, mousePrecisao);
-            tiro.animations.play("inicioTiro", 45);
+            tiro.animations.frame = 1;
             this.tempoUltimoTiro = this.game.time.now;
         }
         else{
 //        console.log("rip");
             tiro.rotation = this.game.physics.arcade.moveToPointer(tiro, this.velocidadeTiro, this.mouseJogador); 
-            tiro.animations.play("inicioTiro", 45);
+            tiro.animations.frame = 1;
             this.tempoUltimoTiro = this.game.time.now;
         }
         
@@ -438,6 +436,7 @@ Jogador.prototype.mataBala = function (bala, _inimigo) {
 Jogador.prototype.mataBalaParede = function (bala, parede) {
     bala.kill();
     this.animacaoBala(bala);
+//    console.log(parede);
 };
 
 Jogador.prototype.animacaoBala = function (_bala) {

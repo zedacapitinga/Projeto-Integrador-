@@ -8,7 +8,7 @@ Fase_01.prototype.create = function () {
     this.setFase('fase_01');
     this.tempoJogadorVivo = this.game.time.now;
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
-    
+	
     this.mapaGlobal = new TileMap(this.game, 'mapaVariosInimigos');
     this.mapaGlobal.outOfBoundsKill = true;
     this.mapaGlobal.checkWorldBounds = true;
@@ -23,6 +23,7 @@ Fase_01.prototype.create = function () {
     this.layerChao.resizeWorld();
     this.mapaGlobal.setCollisionBetween(1, 1000, true, 'paredes');
     
+    this.criaEasyStar(this.mapaGlobal.layer.data, [7, 1]);
 //    this.saida = this.mapaGlobal.createFromObject('objetos', 163, 'doom_porta');
 //    this.game.physics.arcade.enable(this.saida);
 //    this.saida.enableBody = true;
@@ -40,7 +41,7 @@ Fase_01.prototype.create = function () {
 //    this.listaArray = this.inimigos.iterate("tipo", "ini", Phaser.Group.RETURN_TOTAL);
     //nessa função eu rodo o grupo pertuntando pelo tipo e quando ele acha eu mando o callback
 //    this.listaArray = this.inimigos.iterate("tipo", "ini", null, callbackfunction);
-    console.log(this.listaArray);
+//    console.log(this.listaArray);
 //    console.log(this.inimigos.length);
     this.hudTemp = this.game.add.text(30, 100, this.inimigos.length + "oi", 
                                       {font: "24px Arial", fill: "#e82d00", align: "center"});
@@ -52,12 +53,26 @@ Fase_01.prototype.update = function () {
     if (this.jogador.vida < 1) {
         this.fimDeJogo(this.tempoJogadorVivo);
     };
-    
-    
+    var self = this;
+	this.inimigos.forEach(function(inimigo){
+        if(inimigo.alive){
+            var xInimigo = self.layerChaoVisivel.getTileX(inimigo.shadow.position.x);
+            var yInimigo = self.layerChaoVisivel.getTileY(inimigo.shadow.position.y);
+            var xHeroi = self.layerChaoVisivel.getTileX(self.jogador.position.x);
+            var yHeroi = self.layerChaoVisivel.getTileY(self.jogador.position.y);
+            self.easyStar.findPath(xInimigo, yInimigo, xHeroi, yHeroi, function (path) {
+                inimigo.pathFinded(path);
+            });
+            self.easyStar.calculate();            
+        }
+		
+	});
+	
+	
 //    this.game.world.bringToTop(this.jogador);
     
-    this.hud.frame = this.jogador.numTiros;
-    this.hudTemp.setText(this.inimigos.length);
+//    this.hud.frame = this.jogador.numTiros;
+//    this.hudTemp.setText(this.inimigos.length);
 //    this.hudTemp.setText(this.game.time.now);
     
     this.game.physics.arcade.collide(this.jogador.shadow, this.layerParede);
@@ -70,6 +85,7 @@ Fase_01.prototype.update = function () {
     //-----------------------------------
     
     if(this.inimigos.length == 0){
+        
         this.criaInimigo(this.inimigos, this.mapaGlobal.layer.data);
         this.setAlvoDosInimigos(this.jogador.shadow, this.inimigos);
         this.aplicaMascara(this.jogador.luz, [this.layerChao, this.inimigos]);

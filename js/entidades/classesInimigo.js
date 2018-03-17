@@ -1,7 +1,7 @@
 var Fraco = function (_game, _x, _y, _key, _frame, _easyStar, _layer, _heroi) {
     Inimigo.call(this, _game, _x, _y, _key, _frame, _easyStar, _layer, _heroi);
     this.vida = 50;
-    this.velocidade = 200;
+    this.velocidade = 150;
     this.dano = 10;
     this.tint = 0x00FF00;
     this.distancia = 9;

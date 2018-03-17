@@ -30,7 +30,7 @@ Calciumtrice.prototype.getFase = function () {
     return window.localStorage.getItem("fase");
 };
 
-Calciumtrice.prototype.criaInimigo = function(_inimigos,_mapaGlobalLayer, _grupoInimigoCorpo){
+Calciumtrice.prototype.criaInimigo = function(_inimigos,_mapaGlobalLayer){
     var listaInimigos = [{nome: 'spawnInimigoFacil',key: 'heroi',Classe: Fraco},
                          {nome: 'spawnInimigoMedio',key: 'heroi',Classe: Commando},
                          {nome: 'spawnInimigoDificil',key: 'hellKnight',Classe: HellKnight}];
@@ -121,6 +121,28 @@ Calciumtrice.prototype.fimDeJogo = function () {
         telaFimDeJogo.destroy();
         this.state.start('faleceuState');
     }, this);
+};
+
+Calciumtrice.prototype.criaEasyStar = function(dadosLayerTilemap, listaTilesPermitidos){
+        var matrix = this.montaMatrixPathFinder(dadosLayerTilemap);
+        this.easyStar = new EasyStar.js();
+        this.easyStar.setGrid(matrix);
+        this.easyStar.setAcceptableTiles(listaTilesPermitidos);
+        this.easyStar.setIterationsPerCalculation(5000);
+};
+
+Calciumtrice.prototype.montaMatrixPathFinder = function (propriedadesLayer) {
+    var matrixPropriedades = [];
+    var countPropriedadesColuna, j, countPropriedadesLinha, i;
+    var countPropriedadesLinha = propriedadesLayer.length;
+    for (i = 0; i < countPropriedadesLinha; i++) {
+        matrixPropriedades[i] = [];
+        countPropriedadesColuna = propriedadesLayer[i].length;
+        for (j = 0; j < countPropriedadesColuna; j++) {
+            matrixPropriedades[i][j] = propriedadesLayer[i][j].index;
+        }
+    }
+    return matrixPropriedades;
 };
 
 //Calciumtrice.prototype.pauseJogo = function(){
