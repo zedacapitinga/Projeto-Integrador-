@@ -2,6 +2,7 @@
 
 window.addEventListener('load', main);
 
+//    var Calciumtrice = new Calciumtrice();
 function main(){
     Calciumtrice.game = new Phaser.Game(800, 600, Phaser.CANVAS, 'divGame');
     Calciumtrice.game.state.add('boot',Calciumtrice.Boot);

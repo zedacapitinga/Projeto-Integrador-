@@ -52,7 +52,7 @@ Calciumtrice.Preload.prototype ={
         this.load.audio('somPortaF', 'assets/som/doorClose_4.ogg');        
         this.load.audio('somPassoConcreto', 'assets/som/somPassoConcreto.wav');
         
-        this.game.time.advancedTiming = true;
+//        this.game.time.advancedTiming = true;
     },
     create: function(){
         iniciaBanco('fase_01');

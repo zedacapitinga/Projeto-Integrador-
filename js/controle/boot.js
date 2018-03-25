@@ -1,7 +1,7 @@
 var Calciumtrice = Calciumtrice || {};
 
 Calciumtrice.Boot = function(){
-    console.log("criacao boot");
+//    console.log("criacao boot");
 };
 
 Calciumtrice.Boot.prototype = {

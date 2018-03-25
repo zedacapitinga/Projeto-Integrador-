@@ -11,6 +11,7 @@ var Calciumtrice = function () {
     this.vidaJogador;
     this.tirosJogador;
     this.somZumbi;
+//    Phaser.State.call(this);
 };
 
 Calciumtrice.prototype = Object.create(Object.prototype);
@@ -41,7 +42,7 @@ Calciumtrice.prototype.criaInimigo = function(_inimigos,_mapaGlobalLayer){
     for (i = 0, maxI = listaInimigos.length; i < maxI; i++) {
         inimigosDoMapa = this.mapaGlobal.findObjectsByType(listaInimigos[i].nome);
         for (j = 0, maxJ = inimigosDoMapa.length; j < maxJ; j++) {
-            inimigo = new listaInimigos[i].Classe(this.game, inimigosDoMapa[j].x, inimigosDoMapa[j].y, listaInimigos[i].key, 0, this.layerChaoVisivel, _inimigos, _mapaGlobalLayer);
+            inimigo = new listaInimigos[i].Classe(this.game, inimigosDoMapa[j].x, inimigosDoMapa[j].y, listaInimigos[i].key, 0, this.layerChaoVisivel, _inimigos, _mapaGlobalLayer, "ini " + i);
             inimigo.cria();
             inimigo.outOfBoundsKill = true;
             inimigo.checkWorldBounds = true;
@@ -128,7 +129,7 @@ Calciumtrice.prototype.criaEasyStar = function(dadosLayerTilemap, listaTilesPerm
         this.easyStar = new EasyStar.js();
         this.easyStar.setGrid(matrix);
         this.easyStar.setAcceptableTiles(listaTilesPermitidos);
-        this.easyStar.setIterationsPerCalculation(5000);
+        this.easyStar.setIterationsPerCalculation(50);
 };
 
 Calciumtrice.prototype.montaMatrixPathFinder = function (propriedadesLayer) {

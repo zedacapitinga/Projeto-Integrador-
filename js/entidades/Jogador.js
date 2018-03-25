@@ -2,7 +2,6 @@
 
 var Jogador = function (_game, _x, _y, _key, _frame) {
     Phaser.Sprite.call(this, _game, _x, _y, _key, _frame);
-    var self = this;
     this.wallLayers;
     this.linhaVisao = new Phaser.Line();
 
@@ -10,6 +9,7 @@ var Jogador = function (_game, _x, _y, _key, _frame) {
 
     this.armasJogador = [];
     
+    this.andando = false;
     
     this.mira;
     this.numTiros = 20;
@@ -48,7 +48,7 @@ var Jogador = function (_game, _x, _y, _key, _frame) {
 Jogador.prototype = Object.create(Phaser.Sprite.prototype);
 Jogador.prototype.constructor = Jogador;
 
-Jogador.prototype.velocidade = 50;
+Jogador.prototype.velocidade = 500;
 //vai mudar para Arma
 Jogador.prototype.velocidadeTiro = 5000;
 Jogador.prototype.frequenciaTiro = 200;
@@ -164,9 +164,11 @@ Jogador.prototype.criaSombra = function () {
     this.shadow.body.immovable = true;
 };
 
-Jogador.prototype.setHud = function (_hudTiro, _hudVida) {
+Jogador.prototype.setHud = function (_hudTiro, _hudVida, _Pente) {
     this.hudTiro = _hudTiro;
     this.hudVida = _hudVida;
+    this.hud = _Pente;
+    this.hud.frame = this.numTiros;
 };
 
 //                 UPDATE
@@ -222,7 +224,8 @@ Jogador.prototype.recarrega = function () {
 
 Jogador.prototype.fimRecarrega = function () {
     this.numTiros = 20;
-    this.carregando = false;
+    this.carregando = false;    
+    this.hud.frame = this.numTiros;
 };
 
 Jogador.prototype.atira = function () {
@@ -268,6 +271,7 @@ Jogador.prototype.atira = function () {
             y: this.position.y + 10}, 1000, "Linear" ,true).onComplete.add(function() {  
                                                             this.game.time.events.add(10, function() { this.animaCapsula(capsulaChao) }, this);}, this);
         this.hudTiro.setText(this.numTiros);
+        this.hud.frame = this.numTiros;
     }
 };
 
@@ -348,12 +352,14 @@ Jogador.prototype.jogadorGira = function (direcao) {
             this.frame = 71;
             break;
     }
+    this.andando = false;
 };
 
 Jogador.prototype.jogadorAnda = function (direcao) {
     var animacao = this.direcoes[direcao];
     var invertido = false;
     var velocidadeAtual = this.velocidade;
+    this.andando = true;
 
     if (this.tecla_Corrida.isDown) {
         velocidadeAtual *= 2.5;     
@@ -389,14 +395,7 @@ Jogador.prototype.jogadorAnda = function (direcao) {
     this.animations.play(animacao);
     
     
-    this.position.setTo(this.shadow.position.x, this.shadow.position.y);
-    
-    if (this.game.time.now > this.tempoProximoPasso) {
-        this.somJogadorCaminhaConcreto.play();
-        
-        this.tempoProximoPasso = this.game.time.now + this.frequenciaPasso;
-        
-    }    
+    this.position.setTo(this.shadow.position.x, this.shadow.position.y);  
 };
 
 Jogador.prototype.recebeAtaque = function (_inimigo) {

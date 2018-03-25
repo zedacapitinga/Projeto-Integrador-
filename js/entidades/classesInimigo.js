@@ -1,4 +1,4 @@
-var Fraco = function (_game, _x, _y, _key, _frame, _easyStar, _layer, _heroi) {
+var Fraco = function (_game, _x, _y, _key, _frame, _easyStar, _layer, _heroi, _id) {
     Inimigo.call(this, _game, _x, _y, _key, _frame, _easyStar, _layer, _heroi);
     this.vida = 50;
     this.velocidade = 150;
@@ -6,6 +6,7 @@ var Fraco = function (_game, _x, _y, _key, _frame, _easyStar, _layer, _heroi) {
     this.tint = 0x00FF00;
     this.distancia = 9;
     this.velocidadeAtaque = 1;
+    this.aaaa = _id;
 };
 
 Fraco.prototype = Object.create(Inimigo.prototype);
