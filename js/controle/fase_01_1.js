@@ -86,7 +86,7 @@ Fase_01.prototype.create = function () {
     //Da pra otimizar o pathfinder fazendo ele percorrer o 'path' todo, até o jogador trocar de posicao.
     //No momento ele nao está otimizado e usa o update pra correr o 'path'
     //Fazer um evento de tempo pra percorrer o 'for' talvez.
-    
+    this.tempoProximoProcuraHero = 0;
     
 };
 
@@ -103,6 +103,14 @@ Fase_01.prototype.update = function () {
 
     this.inimigos.sort('y', Phaser.Group.SORT_ASCENDING);
 	
+    
+    if(this.game.time.now > this.tempoProximoProcuraHero){
+        
+        this.procuraHero();
+        this.tempoProximoProcuraHero = this.game.time.now + 3000;
+        
+    }
+    
     //-----------------------------------
     
     if(this.inimigos.length == 0){

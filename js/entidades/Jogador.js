@@ -448,6 +448,19 @@ Jogador.prototype.animacaoBala = function (_bala) {
 };
 
 Jogador.prototype.anguloMouseJogador = function(_radianos){
+    
+//    var step = Math.PI * 2 / 360 ;
+//
+//    function update(){
+//    // Move sprite up and down smoothly for show
+//    var tStep = Math.sin( counter ) ;
+//    sprite.y = (game.height/2) + tStep * 30 ;
+//    sprite.rotation += Phaser.Math.degToRad( 0.1 * tStep ) ;
+//    counter += step ;
+//    }
+
+    
+    
     var angulo = _radianos * (180 / Math.PI);
     var anguloTTeste;
     //para virar o 0 para o lado esquerdo
