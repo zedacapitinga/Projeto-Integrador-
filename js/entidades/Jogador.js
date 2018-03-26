@@ -10,7 +10,7 @@ var Jogador = function (_game, _x, _y, _key, _frame) {
     this.armasJogador = [];
     
     this.andando = false;
-    
+    this.tipo = "jog";
     this.mira;
     this.numTiros = 20;
     this.tempoProximoTiro = 0;
@@ -24,8 +24,6 @@ var Jogador = function (_game, _x, _y, _key, _frame) {
     this.luz = this.game.add.graphics(0, 0);
     this.shadow;
 
-    this.groupInimigos;
-
     this.norte = [17, 16, 15, 14, 13, 12, 11, 10, 9];
     this.sul = [62, 61, 60, 59, 58, 57, 56, 55, 54];
     this.leste = [35, 34, 33, 32, 31, 30, 29, 28, 27];
@@ -34,7 +32,6 @@ var Jogador = function (_game, _x, _y, _key, _frame) {
     this.nordeste = [26, 25, 24, 23, 22, 21, 20, 19, 18];
     this.suldoeste = [53, 52, 51, 50, 49, 48, 47, 46, 45];
     this.suldeste = [71, 70, 69, 68, 67, 66, 65, 64, 63];
-
 
     this.game.physics.arcade.enable(this);
     this.enableBody = true;
@@ -48,7 +45,7 @@ var Jogador = function (_game, _x, _y, _key, _frame) {
 Jogador.prototype = Object.create(Phaser.Sprite.prototype);
 Jogador.prototype.constructor = Jogador;
 
-Jogador.prototype.velocidade = 500;
+Jogador.prototype.velocidade = 50;
 //vai mudar para Arma
 Jogador.prototype.velocidadeTiro = 5000;
 Jogador.prototype.frequenciaTiro = 200;
@@ -71,11 +68,10 @@ Jogador.prototype.mouse;
 
 Jogador.prototype.direcoes = ["N", "S", "L", "O", "NO", "NL", "SO", "SL"];
 
-Jogador.prototype.cria = function (_layerOfWall, _groupInimigos) {
+Jogador.prototype.cria = function (_layerOfWall) {
     this.wallLayers = _layerOfWall;
     this.criaAnimacoes();
     this.criaAudio();
-    this.groupInimigos = _groupInimigos;
 
     if (!this.tecla_Norte || !this.tecla_Sul || !this.tecla_Leste || !this.tecla_Oeste || !this.mouse) {
         this.criaInputs();
@@ -170,7 +166,6 @@ Jogador.prototype.setHud = function (_hudTiro, _hudVida, _Pente) {
     this.hud = _Pente;
     this.hud.frame = this.numTiros;
 };
-
 //                 UPDATE
 Jogador.prototype.update = function () {
     var _self = this;
@@ -180,40 +175,27 @@ Jogador.prototype.update = function () {
     this.shadow.body.velocity.y = 0;
     this.shadow.body.velocity.x = 0;
     
-    this.distanciaCamMouseX = (this.mouseJogador.worldX + this.shadow.x) /2;
-    this.distanciaCamMouseY = (this.mouseJogador.worldY + this.shadow.y) /2 ;    
+    this.distanciaCamMouseX = (mouseX + this.shadow.x) /2;
+    this.distanciaCamMouseY = (mouseY + this.shadow.y) /2 ;    
     this.camSpriteTeste.x = this.distanciaCamMouseX;
     this.camSpriteTeste.y = this.distanciaCamMouseY;
-    var radianos = Math.atan2(this.y - mouseY, this.x - mouseX);
     this.mira.position.setTo(mouseX, mouseY);
+    var radianos = Math.atan2(this.y - mouseY, this.x - mouseX);
     this.desenhaLuz(radianos);
     var direcao = this.anguloMouseJogador(radianos);
     
     if (this.tecla_Recarrega.isDown && !this.carregando && this.numTiros != 20) {
         this.recarrega();
-    } else if (this.mouseJogador.isDown) {
+    } 
+    else if (this.mouseJogador.isDown) {
         this.atira();
     }
     if (this.tecla_Norte.isDown || this.tecla_Sul.isDown || this.tecla_Leste.isDown || this.tecla_Oeste.isDown) {
         this.jogadorAnda(direcao);
-    } else {
+    } 
+    else {
         this.jogadorGira(direcao);
     }
-    
-    if(this.tiros.getFirstAlive()){
-        var _bala = this.tiros.getFirstAlive();
-        _self.game.physics.arcade.collide(_bala, _self.groupInimigos, function (_Bala, _inimigo) {
-            _self.mataBala(_Bala, _inimigo);
-        }  );                                       
-        _self.game.physics.arcade.collide(_bala, _self.wallLayers, function (_Bala, parede) {
-            _self.mataBalaParede(_Bala, parede);
-        });
-    };
-
-    this.game.physics.arcade.overlap(this.shadow, this.groupInimigos, function (_sombra, _inimigo) {
-        _self.recebeAtaque(_inimigo);
-    });  
-    
 };
 
 Jogador.prototype.recarrega = function () {
@@ -225,7 +207,7 @@ Jogador.prototype.recarrega = function () {
 Jogador.prototype.fimRecarrega = function () {
     this.numTiros = 20;
     this.carregando = false;    
-    this.hud.frame = this.numTiros;
+//    this.hud.frame = this.numTiros;
 };
 
 Jogador.prototype.atira = function () {
@@ -236,6 +218,7 @@ Jogador.prototype.atira = function () {
     if (this.carregando) {
         return;
     }
+    // propriedade pointer.duration estudala praver se troca por essa
     if (this.game.time.now > this.tempoProximoTiro && this.tiros.countDead() > 0) {
         this.somJogador.play('tiro');
         this.numTiros--;        
@@ -247,6 +230,7 @@ Jogador.prototype.atira = function () {
 //        console.log(this.tempoUltimoTiro - this.tempoProximoTiro);
         
         this.game.camera.shake(0.005, 100);
+        
         if((this.tempoProximoTiro - this.tempoUltimoTiro) < 500  ){
 //        console.log("rajada");
             //mecher no worldX do mouse pra ficar no modo rajada
@@ -270,8 +254,8 @@ Jogador.prototype.atira = function () {
             x : this.position.x + 50, 
             y: this.position.y + 10}, 1000, "Linear" ,true).onComplete.add(function() {  
                                                             this.game.time.events.add(10, function() { this.animaCapsula(capsulaChao) }, this);}, this);
-        this.hudTiro.setText(this.numTiros);
-        this.hud.frame = this.numTiros;
+//        this.hudTiro.setText(this.numTiros);
+//        this.hud.frame = this.numTiros;
     }
 };
 
@@ -406,23 +390,27 @@ Jogador.prototype.recebeAtaque = function (_inimigo) {
         this.danoTela = this.game.add.sprite(0, 0, "danoIndicador");
         this.danoTela.fixedToCamera = true;
         this.game.add.tween(this.danoTela).to( { alpha: 0 }, 2000, "Linear", true);
+        
         this.velocidade = 25;
-        this.somJogador.play('dano');        
+        this.somJogador.play('dano');      
         this.vida -= _inimigo.dano;
+        
         var bloodHit = this.game.add.emitter(0, 0, 100);
         bloodHit.makeParticles("sangue");
         bloodHit.gravity = 200;
         bloodHit.x = this.x - 10;
         bloodHit.y = this.y - 32;
         bloodHit.start(true, 1000, null, 10);
+        
         var numeroRand = Math.floor(Math.random() * 6) + 64;
         var sangueChao = this.game.add.sprite(this.shadow.x - 10, this.shadow.y - 20, "doom_tileset_spritesheet", numeroRand);
         sangueChao.mask = this.mask;
-        this.game.time.events.add(2000, function(){bloodHit.destroy();}, this);
-        this.game.time.events.add(2000, function(){this.velocidade = 50;}, this);
+        
+        this.game.time.events.add(2000, function(){bloodHit.destroy();this.velocidade = 50}, this);
+//        this.game.time.events.add(2000, function(){this.velocidade = 50;}, this);
     }
     
-    this.hudVida.setText(this.vida + "/100");
+//    this.hudVida.setText(this.vida + "/100");
     return true;
 };
 
@@ -433,6 +421,8 @@ Jogador.prototype.mataBala = function (bala, _inimigo) {
 };
 
 Jogador.prototype.mataBalaParede = function (bala, parede) {
+    //botar furo de bala com o parametro parede 
+    var paredeFuro = parede;
     bala.kill();
     this.animacaoBala(bala);
 //    console.log(parede);

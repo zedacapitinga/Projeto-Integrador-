@@ -6,10 +6,8 @@ Fase_01.prototype = Object.create(Calciumtrice.prototype);
 Fase_01.prototype.constructor = Fase_01;
 
 Fase_01.prototype.create = function () {
-    //aqui seta no banco a fase em que o jogador parou
     this.setFase('fase_01');
-    this.tempoJogadorVivo = this.game.time.now;
-    this.game.physics.startSystem(Phaser.Physics.ARCADE);
+//    this.game.physics.startSystem(Phaser.Physics.ARCADE);
 	
     this.mapaGlobal = new TileMap(this.game, 'mapaVariosInimigos');
     this.mapaGlobal.outOfBoundsKill = true;
@@ -29,127 +27,118 @@ Fase_01.prototype.create = function () {
 //    this.saida = this.mapaGlobal.createFromObject('objetos', 163, 'doom_porta');
 //    this.game.physics.arcade.enable(this.saida);
 //    this.saida.enableBody = true;
-    
+    this.inimigoCadavereGrupo = this.game.add.group();
     this.inimigos = this.game.add.group();
-    this.criaInimigo(this.inimigos, this.mapaGlobal.layer.data);   
+    this.criaInimigo(this.inimigos, this.mapaGlobal.layer.data, this.inimigoCadavereGrupo);   
     
-    this.jogador = this.mapaGlobal.createFromObject('objetos', 9, 'heroi', 0, true, true, Jogador);
-    this.jogador.cria(this.layerParede, this.inimigos);
-    this.criaHud();
+    this.jogadorIni = this.mapaGlobal.createFromObject('objetos', 9, 'heroi', 0, true, true, Jogador);
+    this.jogadorIni.cria(this.layerParede);
+//    this.grupoNovo = this.game.add.group();
+//    this.grupoNovo.add(this.jogadorIni);
+    this.inimigos.add(this.jogadorIni);
+//    this.criaHud();
+    //vai ter que mudar o setAlvoDosInimigos rodar com iterate
+    this.jogador = this.inimigos.iterate("tipo", "jog", Phaser.Group.RETURN_CHILD);
+    
     this.setAlvoDosInimigos(this.jogador.shadow, this.inimigos);
-    this.jogador.setHud(this.tirosJogador, this.vidaJogador, this.hud);
+//    this.jogador.setHud(this.tirosJogador, this.vidaJogador, this.hud);
     this.aplicaMascara(this.jogador.luz, [this.layerChao, this.inimigos]);
-//    this.listaInimigos = this.inimigos.iterate("tipo", "ini", Phaser.Group.RETURN_ALL);
-//    console.log(this.listaArray);
-//    this.inimigos.add(this.jogador);
-    //nessa função eu rodo o grupo pertuntando pelo tipo e quando ele acha eu mando o callback
-//    this.listaArray = this.inimigos.iterate("tipo", "ini", null, callbackfunction);
-//    this.hudTemp = this.game.add.text(30, 100, this.inimigos.length, 
-//                                      {font: "24px Arial", fill: "#e82d00", align: "center"});
-//    this.hudTemp.fixedToCamera = true;
-    Calciumtrice.game.input.mouse.capture = true;
+    this.inimigosLista = this.inimigos.iterate("tipo", "ini", Phaser.Group.RETURN_ALL);
     
-       
-    var self = this;
-    this.inimigos.forEach(function(inimigo){
-        if(inimigo.alive){
-            var xInimigo = self.layerChaoVisivel.getTileX(inimigo.shadow.position.x);
-            var yInimigo = self.layerChaoVisivel.getTileY(inimigo.shadow.position.y);
-            var xHeroi = self.layerChaoVisivel.getTileX(self.jogador.position.x);
-            var yHeroi = self.layerChaoVisivel.getTileY(self.jogador.position.y);
-            self.easyStar.findPath(xInimigo, yInimigo, xHeroi, yHeroi, function(path){
-                inimigo.setPath(path);
-            });
-        }
-    });
-    
+    Calciumtrice.game.input.mouse.capture = true;    
     
 //    var self = this;
-//	this.inimigos.forEach(function(inimigo){
+//    this.inimigos.iterate("tipo", "ini", null, function(inimigo){
 //        if(inimigo.alive){
 //            var xInimigo = self.layerChaoVisivel.getTileX(inimigo.shadow.position.x);
 //            var yInimigo = self.layerChaoVisivel.getTileY(inimigo.shadow.position.y);
 //            var xHeroi = self.layerChaoVisivel.getTileX(self.jogador.position.x);
 //            var yHeroi = self.layerChaoVisivel.getTileY(self.jogador.position.y);
-//            self.easyStar.findPath(xInimigo, yInimigo, xHeroi, yHeroi, function (path) {
-//                var path = _path;
-//                self.game.time.events.repeat(Phaser.Timer.SECOND, path.length, inimigo.pathFinded(path), this);
-//                inimigo.pathLista = path;
-//                self.game.time.events.add(1000 , inimigo.pathFinded(path), this);
-//                inimigo.pathFinded(path);   // 220
+//            self.easyStar.findPath(xInimigo, yInimigo, xHeroi, yHeroi, function(path){
+//                inimigo.setPath(path);
 //            });
-//            self.easyStar.calculate();
 //        }
-//		self.game.time.events.repeat(Phaser.Timer.SECOND, inimigo.pathLista.length, inimigo.pathFinded(), this);
-//	});
+//        
+//    });    
     
-    //Da pra otimizar o pathfinder fazendo ele percorrer o 'path' todo, até o jogador trocar de posicao.
-    //No momento ele nao está otimizado e usa o update pra correr o 'path'
-    //Fazer um evento de tempo pra percorrer o 'for' talvez.
+//    var self = this;
+//    this.inimigos.forEach(function(inimigo){
+//        if(inimigo.alive){
+//            var xInimigo = self.layerChaoVisivel.getTileX(inimigo.shadow.position.x);
+//            var yInimigo = self.layerChaoVisivel.getTileY(inimigo.shadow.position.y);
+//            var xHeroi = self.layerChaoVisivel.getTileX(self.jogador.position.x);
+//            var yHeroi = self.layerChaoVisivel.getTileY(self.jogador.position.y);
+//            self.easyStar.findPath(xInimigo, yInimigo, xHeroi, yHeroi, function(path){
+//                inimigo.setPath(path);
+//            });
+//        }
+//    });
+//            
+//        this.procuraHero();
     this.tempoProximoProcuraHero = 0;
     
 };
 
 Fase_01.prototype.update = function () {
-    if (this.jogador.vida < 1) {this.fimDeJogo(this.tempoJogadorVivo)}
-    
-//    this.game.world.bringToTop(this.jogador);
-    
-    this.easyStar.calculate();
+    var faseZeroUm = this;
+    if (this.jogador.vida < 1) {
+        this.fimDeJogo()
+    }    
+//    this.game.world.bringToTop(this.jogador);    
     this.game.physics.arcade.collide(this.jogador.shadow, this.layerParede);
 //    this.game.physics.arcade.collide(this.inimigos.shadow, this.layerParede);
 //    this.game.physics.arcade.collide(this.jogador.shadow, this.inimigos.shadow);
 //    this.game.physics.arcade.collide(this.jogador.shadow, this.saida, this.passaFase, null, this);
-
-    this.inimigos.sort('y', Phaser.Group.SORT_ASCENDING);
-	
+    this.game.physics.arcade.overlap(this.jogadorss, this.inimigosLista, function (_jogador, _inimigo) {
+        _jogador.recebeAtaque(_inimigo);
+    });
     
-    if(this.game.time.now > this.tempoProximoProcuraHero){
-        
-        this.procuraHero();
-        this.tempoProximoProcuraHero = this.game.time.now + 3000;
-        
+    if(this.jogador.tiros.getFirstAlive()){
+        var _bala = this.jogador.tiros.getFirstAlive();
+        this.game.physics.arcade.collide(_bala, this.inimigos, function (_Bala, _inimigo) {
+            faseZeroUm.jogador.mataBala(_Bala, _inimigo);
+        });                                       
+        this.game.physics.arcade.collide(_bala, this.layerParede, function (_Bala, _parede) {
+            faseZeroUm.jogador.mataBalaParede(_Bala, _parede);
+        });
     }
     
-    //-----------------------------------
-    
-    if(this.inimigos.length == 0){
-        
-        this.criaInimigo(this.inimigos, this.mapaGlobal.layer.data);
+    this.easyStar.calculate();
+    if(this.game.time.now > this.tempoProximoProcuraHero){        
+        this.procuraHero();
+        this.tempoProximoProcuraHero = this.game.time.now + 1000;        
+    }
+    if(this.inimigos.length == 1){        
+        this.criaInimigo(this.inimigos, this.mapaGlobal.layer.data, this.inimigoCadavereGrupo);
         this.setAlvoDosInimigos(this.jogador.shadow, this.inimigos);
         this.aplicaMascara(this.jogador.luz, [this.layerChao, this.inimigos]);
         this.procuraHero();
-        
-              
-    }
-    
+    }    
+    this.inimigos.sort('y', Phaser.Group.SORT_ASCENDING);	
 };
 
 Fase_01.prototype.render = function () {
     this.game.debug.text(this.game.time.fps || '--', 2, 14, "#ff0000");
-    this.game.debug.text(this.inimigos.length || '--', 2, 24, "#ff0000");
+    Calciumtrice.game.debug.text(Calciumtrice.game.time.fps || '--', 2, 14, "#ff0000");
+    this.game.debug.text(this.inimigos.length || '--', 2, 30, "#ff0000");
 //    Calciumtrice.game.debug.text(this.easyStar.instances.length || '--', 2, 14, "#ff0000");
     
 };
 
 Fase_01.prototype.procuraHero = function(){
    var self = this;
-    this.inimigos.forEach(function(inimigo){
+    this.inimigos.iterate("tipo", "ini", null, function(inimigo){
         if(inimigo.alive){
             var xInimigo = self.layerChaoVisivel.getTileX(inimigo.shadow.position.x);
             var yInimigo = self.layerChaoVisivel.getTileY(inimigo.shadow.position.y);
             var xHeroi = self.layerChaoVisivel.getTileX(self.jogador.position.x);
             var yHeroi = self.layerChaoVisivel.getTileY(self.jogador.position.y);
             self.easyStar.findPath(xInimigo, yInimigo, xHeroi, yHeroi, function(path){
-//                inimigo.pathLista = path;
-//                inimigo.pathFinded(path);
                 inimigo.setPath(path);
-//                inimigo.pathFinded(path);
             });
-//            self.easyStar.calculate();
-//            inimigo.vaiAndar();
         }
-    });  
+        
+    }); 
 };
 
 Fase_01.prototype.passaFase = function () {

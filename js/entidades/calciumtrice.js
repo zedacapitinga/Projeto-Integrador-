@@ -31,19 +31,21 @@ Calciumtrice.prototype.getFase = function () {
     return window.localStorage.getItem("fase");
 };
 
-Calciumtrice.prototype.criaInimigo = function(_inimigos,_mapaGlobalLayer){
+Calciumtrice.prototype.criaInimigo = function(_inimigos,_mapaGlobalLayer, _inimigoCadavereGrupo){
+    
     var listaInimigos = [{nome: 'spawnInimigoFacil',key: 'heroi',Classe: Fraco},
                          {nome: 'spawnInimigoMedio',key: 'heroi',Classe: Commando},
-                         {nome: 'spawnInimigoDificil',key: 'hellKnight',Classe: HellKnight}];
-    
+                         {nome: 'spawnInimigoDificil',key: 'hellKnight',Classe: HellKnight}];    
     var inimigosDoMapa, inimigo;
     var inimigos = _inimigos;
     var i, j, maxI, maxJ;
-    for (i = 0, maxI = listaInimigos.length; i < maxI; i++) {
+    
+    for (i = 0, maxI = listaInimigos.length; i < maxI; i++) {        
         inimigosDoMapa = this.mapaGlobal.findObjectsByType(listaInimigos[i].nome);
-        for (j = 0, maxJ = inimigosDoMapa.length; j < maxJ; j++) {
+        for (j = 0, maxJ = inimigosDoMapa.length; j < maxJ; j++) {            
             inimigo = new listaInimigos[i].Classe(this.game, inimigosDoMapa[j].x, inimigosDoMapa[j].y, listaInimigos[i].key, 0, this.layerChaoVisivel, _inimigos, _mapaGlobalLayer, "ini " + i);
             inimigo.cria();
+            inimigo.setGrupoCadaver(_inimigoCadavereGrupo);
             inimigo.outOfBoundsKill = true;
             inimigo.checkWorldBounds = true;
             inimigos.add(inimigo);
@@ -93,13 +95,9 @@ Calciumtrice.prototype.criaHud = function () {
 
 Calciumtrice.prototype.setAlvoDosInimigos = function (alvo, inimigos) {
     if (inimigos instanceof Phaser.Group) {
-        inimigos.forEach(function (inimigo) {
-            inimigo.setAlvoDoInimigo(alvo);
-        }, this);
-        return;
-    }
-    for (var i = 0; i < inimigos.length; i++) {
-        inimigos[i].setAlvoDoInimigo(alvo);
+        inimigos.iterate("tipo", "ini", null, function(inimigo){
+            inimigo.setAlvoDoInimigo(alvo); 
+        });
     }
 };
 

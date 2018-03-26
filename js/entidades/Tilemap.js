@@ -1,9 +1,7 @@
 var TileMap = function (_game, _key, _tileWidth, _tileHeight, _width, _heigth) {
-//    Phaser.Tilemaps.Tilemap.call(this, _game, _key, _tileWidth, _tileHeight, _width, _heigth);
     Phaser.Tilemap.call(this, _game, _key, _tileWidth, _tileHeight, _width, _heigth);
 };
 
-//TileMap.prototype = Object.create(Phaser.Tilemaps.Tilemap.prototype);
 TileMap.prototype = Object.create(Phaser.Tilemap.prototype);
 TileMap.prototype.constructor = TileMap;
 
