@@ -7,6 +7,7 @@ Envolvidos no projeto:
 - Marcelo Costa;
 - Roberto Monteiro;
 
+link:https://rmonteiro95.github.io/Projeto-Integrador-/[Jogo]
 [Jogo] (https://rmonteiro95.github.io/Projeto-Integrador-/)
 
 Phaser, html5, javascript;
